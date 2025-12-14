@@ -140,7 +140,18 @@ class CameraCanvasManager {
             console.log("Object detection model loaded.");
         } else if (this.gamemode === 'detectFaceEmotion') {
             console.log("Loading Face API models...");
-            const MODEL_URL = './weights';
+            async function safeIsTauri() {
+                try {
+                    const { isTauri } = await import('@tauri-apps/api/core');
+                    return isTauri();
+                } catch {
+                    return false; // Browser
+                }
+            }
+            const windowTauri = await safeIsTauri();
+
+            const MODEL_URL = windowTauri ? 'tauri://localhost/weights' : '/weights';
+            console.log(MODEL_URL);
             await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL)
             await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
             await faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL);
