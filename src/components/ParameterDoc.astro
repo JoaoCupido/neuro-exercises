@@ -32,11 +32,11 @@ export interface Parameter {
                     </span>
                 </div>
 
-                {Astro.props.examples.length > 0 && (
+                {(Astro.props.examples ?? []).length > 0 && (
                     <div>
                         <p class="text-muted-foreground text-sm mb-2">Examples:</p>
                         <div class="flex flex-wrap gap-2">
-                            {Astro.props.examples.map(example => (
+                            {(Astro.props.examples ?? []).map(example => (
                                 <p class="text-primary text-sm font-mono bg-primary/10 px-3 py-1 rounded transition-colors">
                                     {example}
                                 </p>

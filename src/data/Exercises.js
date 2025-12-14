@@ -1,12 +1,13 @@
-import { Pencil, Waypoints, Zap, FileText } from "@lucide/astro";
+import { Pencil, Waypoints, Zap, FileText, Camera } from "@lucide/astro";
 
 /*
 export interface Exercise {
-    id: string;            // unique id ("drawing", "tmt")
-    title: string;         // display name
-    description?: string;  // optional
-    icon: any;             // lucide icon
-    path: string;          // URL path (Astro route)
+    id: string;              // unique id ("drawing", "tmt")
+    title: string;           // display name
+    description?: string;    // optional
+    icon: any;               // lucide icon
+    path: string;            // URL path (Astro route)
+    pathWithoutDot: string;  // URL path without relative dot
 }
 */
 
@@ -16,7 +17,8 @@ export const exercisesList = [
         title: "Drawing",
         description: "Free-form drawing with customizable tools",
         icon: Pencil,
-        path: "./drawing"
+        path: "./drawing",
+        pathWithoutDot: "/drawing"
     },
 
     {
@@ -24,7 +26,17 @@ export const exercisesList = [
         title: "Trail Making Test",
         description: "Cognitive assessment connecting sequences",
         icon: Waypoints,
-        path: "./tmt"
+        path: "./tmt",
+        pathWithoutDot: "/tmt"
+    },
+
+    {
+        id: "camera",
+        title: "Camera",
+        description: "Real-time video analysis for object/emotion detection",
+        icon: Camera,
+        path: "./camera",
+        pathWithoutDot: "/camera",
     },
 
     // Add more exercises later:

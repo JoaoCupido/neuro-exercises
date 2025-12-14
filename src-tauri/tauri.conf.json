@@ -1,6 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "neuro-exercises-app",
+  "mainBinaryName": "Neuro Exercises",
   "version": "0.1.0",
   "identifier": "com.joaocupido.neuro-exercises",
   "build": {
@@ -12,8 +13,8 @@
     "windows": [
       {
         "title": "Neuro Exercises",
-        "width": 800,
-        "height": 600,
+        "width": 1280,
+        "height": 720,
         "resizable": true,
         "fullscreen": false
       }

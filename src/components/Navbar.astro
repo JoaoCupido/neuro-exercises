@@ -9,7 +9,7 @@ import { exercisesList } from '../data/Exercises';
         <div class="flex h-16 items-center justify-between md:justify-start w-full gap-8">
             <!-- Logo -->
             <div class="flex items-center gap-8">
-                <a href={`./`} class="text-xl font-bold text-primary flex items-center gap-2">
+                <a href={`${process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : ""}/`} class="text-xl font-bold text-primary flex items-center gap-2">
                     <Brain class="w-6 h-6" />
                     Neuro Exercises
                 </a>
@@ -25,15 +25,15 @@ import { exercisesList } from '../data/Exercises';
                         </button>
                         <div class="absolute top-full left-0 mt-1 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                             <div class="py-2">
-                                <a href={ex.path} class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors">
+                                <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot} class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors">
                                     <ex.icon class="w-4 h-4" />
                                     Execute Exercise
                                 </a>
-                                <a href={ex.path + `/docs`} class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors">
+                                <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot + `/docs`} class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors">
                                     <FileText class="w-4 h-4" />
                                     API Documentation
                                 </a>
-                                <a href={ex.path + `/generate`} class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors">
+                                <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot + `/generate`} class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors">
                                     <Link class="w-4 h-4" />
                                     Generate URL
                                 </a>
@@ -60,15 +60,15 @@ import { exercisesList } from '../data/Exercises';
                         <div class="px-3 py-2 text-sm font-semibold text-foreground">
                             {ex.title}
                         </div>
-                        <a href={ex.path} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
+                        <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
                             <ex.icon class="w-4 h-4" />
                             Execute Exercise
                         </a>
-                        <a href={ex.path + `/docs`} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
+                        <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot + `/docs`} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
                             <FileText class="w-4 h-4" />
                             API Documentation
                         </a>
-                        <a href={ex.path + `/generate`} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
+                        <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot + `/generate`} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
                             <Link class="w-4 h-4" />
                             Generate URL
                         </a>
@@ -78,7 +78,7 @@ import { exercisesList } from '../data/Exercises';
                 <hr class="h-0.5 border-t-0 bg-border" />
 
                 <!-- Home Link -->
-                <a href={`./`} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
+                <a href={`${process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : ""}/`} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
                     <Home class="w-4 h-4" />
                     Home
                 </a>
