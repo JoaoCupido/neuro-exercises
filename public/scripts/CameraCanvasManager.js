@@ -149,8 +149,11 @@ class CameraCanvasManager {
                 }
             }
             const windowTauri = await safeIsTauri();
+            const isGithubPages = window.location.hostname.includes('github.io');
 
-            const MODEL_URL = windowTauri ? 'tauri://localhost/weights' : '/weights';
+            const MODEL_URL = windowTauri ?
+                'tauri://localhost/weights' :
+                isGithubPages ? '/neuro-exercises/weights' : '/weights';
             console.log(MODEL_URL);
             await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL)
             await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
