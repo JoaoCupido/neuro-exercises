@@ -129,7 +129,7 @@ function buildURLParams(data) {
 }
 
 function constructFullURL(params) {
-    const baseUrl = window.location.origin + window.location.pathname.replace('/generate', '/');
+    const baseUrl = window.location.origin + window.location.pathname.replace('/generate', '');
     return params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
 }
 

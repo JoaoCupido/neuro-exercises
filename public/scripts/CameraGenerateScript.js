@@ -33,7 +33,7 @@ function generateURL() {
     if (maxDisplayItems) params.append("maxDisplayItems", maxDisplayItems);
 
     // Build final URL
-    const baseUrl = window.location.origin + window.location.pathname.replace("/generate", "/");
+    const baseUrl = window.location.origin + window.location.pathname.replace("/generate", "");
     const fullUrl = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
 
     generatedUrlEl.textContent = fullUrl;
