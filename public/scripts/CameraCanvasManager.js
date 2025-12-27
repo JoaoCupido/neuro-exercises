@@ -10,7 +10,7 @@ class CameraCanvasManager {
         this.cameraFacing = this.urlParams.get('cameraFacing') || 'user';
         this.debug = this.urlParams.get('debug') === 'true';
         this.sensitivity = parseFloat(this.urlParams.get('sensitivity')) || 0.6;
-        this.cameraOpacity = parseFloat(this.urlParams.get('cameraOpacity')) || 1.0;
+        this.cameraOpacity = parseFloat(this.urlParams.get('cameraOpacity')) ?? 1.0;
 
         // Add new positioning parameters with defaults
         this.displayPositioning = {
