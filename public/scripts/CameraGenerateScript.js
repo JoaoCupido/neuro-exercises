@@ -14,8 +14,8 @@ function generateURL() {
     const gamemode = document.getElementById("gamemodeSelect").value;
     const sensitivity = document.getElementById("sensitivityInput").value;
     const cameraFacing = document.getElementById("cameraFacingSelect").value;
+    const cameraOpacity = document.getElementById("cameraOpacityInput").value;
 
-    // NEW FIELDS
     const displayHorizontal = document.getElementById("displayHorizontalSelect")?.value;
     const displayVertical = document.getElementById("displayVerticalSelect")?.value;
     const maxDisplayItems = document.getElementById("maxDisplayItemsInput")?.value;
@@ -27,6 +27,7 @@ function generateURL() {
 
     if (sensitivity) params.append("sensitivity", sensitivity);
     if (cameraFacing) params.append("cameraFacing", cameraFacing);
+    if (cameraOpacity) params.append("cameraOpacity", cameraOpacity);
 
     if (displayHorizontal) params.append("displayHorizontal", displayHorizontal);
     if (displayVertical) params.append("displayVertical", displayVertical);

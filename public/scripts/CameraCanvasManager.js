@@ -10,6 +10,7 @@ class CameraCanvasManager {
         this.cameraFacing = this.urlParams.get('cameraFacing') || 'user';
         this.debug = this.urlParams.get('debug') === 'true';
         this.sensitivity = parseFloat(this.urlParams.get('sensitivity')) || 0.6;
+        this.cameraOpacity = parseFloat(this.urlParams.get('cameraOpacity')) || 1.0;
 
         // Add new positioning parameters with defaults
         this.displayPositioning = {
@@ -28,6 +29,7 @@ class CameraCanvasManager {
     async init() {
         this.setupCanvas();
         await this.setupCamera();
+        this.applyCameraOpacity();
         await this.loadScripts();
         await this.loadModels();
         this.setupDisplayPosition();
@@ -49,6 +51,19 @@ class CameraCanvasManager {
         const container = this.canvas.parentElement;
         this.canvas.width = container.clientWidth;
         this.canvas.height = container.clientHeight;
+    }
+
+    applyCameraOpacity() {
+        if (this.video) {
+            // Clamp opacity between 0.0 and 1.0
+            const opacity = Math.max(0.0, Math.min(1.0, this.cameraOpacity));
+            this.video.style.opacity = opacity;
+
+            // Optional: Add a CSS class for styling
+            this.video.classList.toggle('opacity-controlled', opacity !== 1.0);
+
+            console.log(`Camera opacity set to: ${opacity}`);
+        }
     }
 
     setupDisplayPosition() {

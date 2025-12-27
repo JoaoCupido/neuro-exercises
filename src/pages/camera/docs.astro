@@ -103,6 +103,15 @@ import GridDocs from "../../components/GridDocs.astro";
                                     examples={['/?maxDisplayItems=3']}
                                     codeExample="?maxDisplayItems=8"
                             />
+
+                            <ParameterDoc
+                                    name="cameraOpacity"
+                                    description="Control the camera feed opacity/transparency (0.0 to 1.0)."
+                                    type="Number (0-1)"
+                                    defaultValue="1.0"
+                                    examples={['/?cameraOpacity=0.5', '/?cameraOpacity=0.8']}
+                                    codeExample="?cameraOpacity=0.7"
+                            />
                         </div>
                     </section>
 
@@ -116,7 +125,7 @@ import GridDocs from "../../components/GridDocs.astro";
 
                             <div class="bg-secondary rounded-lg p-4 overflow-x-auto">
                                 <code class="text-sm text-foreground whitespace-nowrap">
-                                    {"/?gamemode=detectFaceEmotion&cameraFacing=user&sensitivity=0.7"}
+                                    {"/?gamemode=detectFaceEmotion&cameraFacing=user&sensitivity=0.7&cameraOpacity=1.0"}
                                 </code>
                             </div>
                         </div>
