@@ -540,8 +540,8 @@ class TMTCanvasManager {
                     time: parseFloat(this.popupTimer.toFixed(2)),
                     errors: this.errors,
                     log: this.completeLog,
-                    trailData: this.trailData,
-                    selectedItems: this.selectedItemsMeta
+                    //trailData: this.trailData,
+                    //selectedItems: this.selectedItemsMeta
                 }
             };
             window.vuplex.postMessage(JSON.stringify(sendData));
