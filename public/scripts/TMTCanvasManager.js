@@ -532,21 +532,29 @@ class TMTCanvasManager {
         this.stopTimer();
         this.showPopup();
 
+        this.pushLogEntry({
+            state: "FINISHED",
+            item: "-",
+            positionInTime: this.popupTimer
+        });
+    }
+
+    pushLogEntry(logEntry) {
+        this.completeLog.push(logEntry);
+
         if (window.vuplex) {
             const sendData = {
                 type: "NeuroExercises",
                 activity: "TMT",
                 dataNE: {
+                    log: logEntry,
                     time: parseFloat(this.popupTimer.toFixed(2)),
                     errors: this.errors,
-                    log: this.completeLog,
-                    //trailData: this.trailData,
-                    //selectedItems: this.selectedItemsMeta
                 }
             };
             window.vuplex.postMessage(JSON.stringify(sendData));
         } else {
-            console.log("VUPLEX bridge not available");
+            console.log("VUPLEX bridge not available", logEntry);
         }
     }
 
@@ -574,7 +582,7 @@ class TMTCanvasManager {
                     // Correct selection
                     this.selectedItemsMeta.push({ id: item, isError: false });
 
-                    this.completeLog.push({
+                    this.pushLogEntry({
                         state: "CORRECT",
                         item: item,
                         positionInTime: this.popupTimer
@@ -587,7 +595,7 @@ class TMTCanvasManager {
                     }
                 } else {
                     // Wrong selection
-                    this.completeLog.push({
+                    this.pushLogEntry({
                         state: "WRONG",
                         item: item,
                         positionInTime: this.popupTimer
