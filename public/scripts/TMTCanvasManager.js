@@ -547,7 +547,7 @@ class TMTCanvasManager {
                 type: "NeuroExercises",
                 activity: "TMT",
                 dataNE: {
-                    log: logEntry,
+                    log: this.completeLog,
                     time: parseFloat(this.popupTimer.toFixed(2)),
                     errors: this.errors,
                 }
