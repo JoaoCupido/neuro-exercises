@@ -6,6 +6,10 @@ const colorModeRadios = document.querySelectorAll('input[name="colorMode"]');
 const hideToolbarCheck = document.getElementById('hideToolbarCheck');
 const toolbarPositionGroup = document.getElementById('toolbarPositionGroup');
 
+// Import functionality
+document.getElementById('importBtn').addEventListener('click', importFromURL);
+document.getElementById('importParamBtn').addEventListener('click', importFromParams);
+
 // Enable/disable custom colors input
 colorModeRadios.forEach(radio => {
     radio.addEventListener('change', (e) => {
@@ -149,3 +153,186 @@ async function copyToClipboard() {
         console.error('Failed to copy:', err);
     }
 }
+
+function importFromURL() {
+    const urlInput = document.getElementById('importUrlInput').value.trim();
+    if (!urlInput) return;
+
+    try {
+        // Extract query parameters from URL
+        const url = new URL(urlInput);
+        const params = url.searchParams;
+
+        // Apply parameters to form
+        applyParameters(params);
+
+        // Update the generated URL display
+        generateURL();
+
+        // Clear the input
+        document.getElementById('importUrlInput').value = '';
+
+        // Scroll to top of results
+        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (error) {
+        alert('Invalid URL format. Please enter a valid URL.');
+        console.error('URL import error:', error);
+    }
+}
+
+function importFromParams() {
+    const paramInput = document.getElementById('importParamInput').value.trim();
+    if (!paramInput) return;
+
+    try {
+        // Create URLSearchParams from the input string
+        const params = new URLSearchParams(paramInput);
+
+        // Apply parameters to form
+        applyParameters(params);
+
+        // Update the generated URL display
+        generateURL();
+
+        // Clear the input
+        document.getElementById('importParamInput').value = '';
+
+        // Scroll to top of results
+        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (error) {
+        alert('Invalid parameter format. Please check your input.');
+        console.error('Parameter import error:', error);
+    }
+}
+
+function applyParameters(params) {
+    // Helper function to decode URL-encoded values
+    const decodeValue = (value) => {
+        try {
+            return decodeURIComponent(value);
+        } catch {
+            return value;
+        }
+    };
+
+    // Helper function to set checkbox based on string value
+    const setCheckbox = (id, paramValue) => {
+        const checkbox = document.getElementById(id);
+        if (checkbox) {
+            checkbox.checked = paramValue === 'true';
+        }
+    };
+
+    // Helper function to set input value
+    const setInput = (id, paramValue) => {
+        const input = document.getElementById(id);
+        if (input && paramValue !== null) {
+            input.value = paramValue;
+        }
+    };
+
+    // Helper function to set select value
+    const setSelect = (id, paramValue) => {
+        const select = document.getElementById(id);
+        if (select && paramValue !== null) {
+            select.value = paramValue;
+        }
+    };
+
+    // Helper function to set radio button
+    const setRadio = (name, value) => {
+        const radio = document.querySelector(`input[name="${name}"][value="${value}"]`);
+        if (radio) {
+            radio.checked = true;
+        }
+    };
+
+    // Drawing-specific parameters
+    setInput('sizeInput', params.get('brushSize'));
+
+    // Handle colors parameter
+    const colors = params.get('colors');
+    if (colors) {
+        if (colors === '*') {
+            setRadio('colorMode', 'all');
+            customColorsInput.disabled = true;
+        } else {
+            setRadio('colorMode', 'custom');
+            customColorsInput.disabled = false;
+            customColorsInput.value = colors;
+        }
+    }
+
+    // Toolbar settings
+    setCheckbox('hideToolbarCheck', params.get('hideToolbar'));
+    setSelect('toolbarPositionSelect', params.get('toolbarPosition'));
+
+    // Background parameters
+    const bgColor = params.get('bgColor');
+    if (bgColor) {
+        document.getElementById('bgColorInput').value = decodeValue(bgColor);
+    }
+
+    const bgImage = params.get('bgImage');
+    if (bgImage) {
+        document.getElementById('bgImageInput').value = bgImage;
+    }
+
+    setCheckbox('coloringBookImageCheck', params.get('isColoringBookImage'));
+    setInput('bgOpacityInput', params.get('bgOpacity'));
+    setInput('bgImageSizeInput', params.get('bgImageSize'));
+    setInput('bgPosXInput', params.get('bgImagePosX'));
+    setInput('bgPosYInput', params.get('bgImagePosY'));
+
+    // Grid parameters
+    setCheckbox('gridEnabledCheck', params.get('gridEnabled'));
+
+    const gridColor = params.get('gridColor');
+    if (gridColor) {
+        document.getElementById('gridColorInput').value = decodeValue(gridColor);
+    }
+
+    setInput('gridOpacityInput', params.get('gridOpacity'));
+    setSelect('gridStyleSelect', params.get('gridStyle'));
+    setInput('gridSizeInput', params.get('gridSize'));
+
+    // Show inputs (JSON object)
+    const showInputsParam = params.get('showInputs');
+    if (showInputsParam) {
+        try {
+            const showInputs = JSON.parse(showInputsParam);
+
+            // Set each checkbox individually
+            setCheckbox('eraserInputCheck', showInputs.eraserInput?.toString());
+            setCheckbox('cursorSizeInputCheck', showInputs.cursorSizeInput?.toString());
+            setCheckbox('undoRedoInputCheck', showInputs.enableUndoRedoInput?.toString());
+            setCheckbox('backgroundInputsCheck', showInputs.backgroundInputs?.toString());
+            setCheckbox('gridInputsCheck', showInputs.gridInputs?.toString());
+        } catch (error) {
+            console.warn('Invalid showInputs JSON:', error);
+        }
+    }
+
+    // Update toolbar position visibility based on hideToolbar
+    const hideToolbar = params.get('hideToolbar');
+    if (hideToolbar === 'true') {
+        toolbarPositionGroup.style.display = 'none';
+    } else {
+        toolbarPositionGroup.style.display = 'block';
+    }
+}
+
+// Optional: Add auto-detection for URL in current page
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if there are parameters in the current URL that we should import
+    const currentParams = new URLSearchParams(window.location.search);
+    if (currentParams.toString()) {
+        // Ask user if they want to import from current URL
+        if (confirm('Found parameters in URL. Would you like to import them?')) {
+            applyParameters(currentParams);
+            generateURL();
+        }
+    }
+});

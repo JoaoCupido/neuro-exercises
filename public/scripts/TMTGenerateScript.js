@@ -3,6 +3,10 @@ const form = document.getElementById('urlForm');
 const generatedUrlEl = document.getElementById('generatedUrl');
 const copyBtn = document.getElementById('copyBtn');
 
+// Import functionality
+document.getElementById('importBtn').addEventListener('click', importFromURL);
+document.getElementById('importParamBtn').addEventListener('click', importFromParams);
+
 // Add event listeners to all form inputs
 form.addEventListener('input', generateURL);
 form.addEventListener('change', generateURL);
@@ -159,3 +163,149 @@ function generateRandomPositions() {
 
 // Add event listener for random positions button
 document.getElementById('generateRandomPositionsBtn').addEventListener('click', generateRandomPositions);
+
+function importFromURL() {
+    const urlInput = document.getElementById('importUrlInput').value.trim();
+    if (!urlInput) return;
+
+    try {
+        // Extract query parameters from URL
+        const url = new URL(urlInput);
+        const params = url.searchParams;
+
+        // Apply parameters to form
+        applyParameters(params);
+
+        // Update the generated URL display
+        generateURL();
+
+        // Clear the input
+        document.getElementById('importUrlInput').value = '';
+
+        // Scroll to top of results
+        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (error) {
+        alert('Invalid URL format. Please enter a valid URL.');
+        console.error('URL import error:', error);
+    }
+}
+
+function importFromParams() {
+    const paramInput = document.getElementById('importParamInput').value.trim();
+    if (!paramInput) return;
+
+    try {
+        // Create URLSearchParams from the input string
+        const params = new URLSearchParams(paramInput);
+
+        // Apply parameters to form
+        applyParameters(params);
+
+        // Update the generated URL display
+        generateURL();
+
+        // Clear the input
+        document.getElementById('importParamInput').value = '';
+
+        // Scroll to top of results
+        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (error) {
+        alert('Invalid parameter format. Please check your input.');
+        console.error('Parameter import error:', error);
+    }
+}
+
+function applyParameters(params) {
+    // Helper function to decode URL-encoded values
+    const decodeValue = (value) => {
+        try {
+            return decodeURIComponent(value);
+        } catch {
+            return value;
+        }
+    };
+
+    // Helper function to set checkbox based on string value
+    const setCheckbox = (id, paramValue) => {
+        const checkbox = document.getElementById(id);
+        if (checkbox) {
+            checkbox.checked = paramValue === 'true';
+        }
+    };
+
+    // Helper function to set input value
+    const setInput = (id, paramValue) => {
+        const input = document.getElementById(id);
+        if (input && paramValue !== null) {
+            input.value = paramValue;
+        }
+    };
+
+    // Helper function to set select value
+    const setSelect = (id, paramValue) => {
+        const select = document.getElementById(id);
+        if (select && paramValue !== null) {
+            select.value = paramValue;
+        }
+    };
+
+    // TMT-specific parameters
+    setInput('trailLengthInput', params.get('trailLength'));
+    setInput('numberRadiusInput', params.get('numberRadius'));
+    setInput('textSizeInput', params.get('textSize'));
+    setSelect('symbolTypeSelect', params.get('symbolType'));
+    setCheckbox('reverseOrderCheck', params.get('reverseOrder'));
+    setCheckbox('showTimerCheck', params.get('showTimer'));
+
+    // TMT advanced parameters
+    setCheckbox('linesUnderDotsCheck', params.get('linesUnderDots'));
+    setCheckbox('allowWrongSelectionsCheck', params.get('allowWrongSelections'));
+    setCheckbox('showWrongSelectionsCheck', params.get('showWrongSelections'));
+    setCheckbox('hidePopupButtonsCheck', params.get('hidePopupButtons'));
+    setCheckbox('hidePopupResultsCheck', params.get('hidePopupResults'));
+    setCheckbox('hidePopupAllCheck', params.get('hidePopupAll'));
+
+    // Custom positions
+    const customPositions = params.get('customPositions');
+    if (customPositions) {
+        try {
+            const decoded = decodeValue(customPositions);
+            // Validate JSON before setting
+            JSON.parse(decoded);
+            document.getElementById('customPositionsInput').value = decoded;
+        } catch (error) {
+            console.warn('Invalid custom positions JSON:', error);
+        }
+    }
+
+    // Background parameters
+    const bgColor = params.get('bgColor');
+    if (bgColor) {
+        document.getElementById('bgColorInput').value = decodeValue(bgColor);
+    }
+
+    const bgImage = params.get('bgImage');
+    if (bgImage) {
+        document.getElementById('bgImageInput').value = bgImage;
+    }
+
+    setCheckbox('coloringBookImageCheck', params.get('isColoringBookImage'));
+    setInput('bgOpacityInput', params.get('bgOpacity'));
+    setInput('bgImageSizeInput', params.get('bgImageSize'));
+    setInput('bgPosXInput', params.get('bgImagePosX'));
+    setInput('bgPosYInput', params.get('bgImagePosY'));
+
+    // Grid parameters
+    setCheckbox('gridEnabledCheck', params.get('gridEnabled'));
+
+    const gridColor = params.get('gridColor');
+    if (gridColor) {
+        document.getElementById('gridColorInput').value = decodeValue(gridColor);
+    }
+
+    setInput('gridOpacityInput', params.get('gridOpacity'));
+    setSelect('gridStyleSelect', params.get('gridStyle'));
+    setInput('gridSizeInput', params.get('gridSize'));
+}
