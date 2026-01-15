@@ -108,6 +108,15 @@ import GridDocs from '../../components/GridDocs.astro';
                             />
 
                             <ParameterDoc
+                                    name="textSize"
+                                    description="Controls the size of the text inside circles in pixels."
+                                    type="Number"
+                                    defaultValue="18"
+                                    examples={["/?textSize=16", "/?textSize=24"]}
+                                    codeExample="?textSize=20"
+                            />
+
+                            <ParameterDoc
                                     name="showTimer"
                                     description="Shows or hides the timer display during the test."
                                     type="Boolean"

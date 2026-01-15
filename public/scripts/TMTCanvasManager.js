@@ -307,8 +307,11 @@ class TMTCanvasManager {
         for (let item in items) {
             const itemX = items[item].x;
             const itemY = items[item].y;
-            const distance = Math.sqrt((x - itemX) ** 2 + (y - itemY) ** 2);
-            if (distance < this.tmtSettings.numberRadius * 2.5) {
+            // Calculate distance between centers
+            const distance = Math.sqrt(Math.pow(x - itemX, 2) + Math.pow(y - itemY, 2));
+            // Ensure at least 2.5 * radius + some padding for text visibility
+            const minDistance = this.tmtSettings.numberRadius * 2.5;
+            if (distance < minDistance) {
                 return true;
             }
         }
@@ -316,15 +319,19 @@ class TMTCanvasManager {
     }
 
     generateRandomPosition(items) {
+        const margin = this.tmtSettings.numberRadius * 2; // Margin from edges
         let x, y;
         let attempts = 0;
-        const maxAttempts = 100;
+        const maxAttempts = 500; // Increased from 100 to 500 for better chance of finding non-overlapping position
 
         do {
-            x = Math.floor(Math.random() * (this.canvas.width - 2 * this.tmtSettings.numberRadius)) + this.tmtSettings.numberRadius;
-            y = Math.floor(Math.random() * (this.canvas.height - 2 * this.tmtSettings.numberRadius)) + this.tmtSettings.numberRadius;
+            // Ensure positions are within canvas bounds with margins
+            x = margin + Math.random() * (this.canvas.width - 2 * margin);
+            y = margin + Math.random() * (this.canvas.height - 2 * margin);
             attempts++;
+
             if (attempts > maxAttempts) {
+                console.warn('Max attempts reached, may have overlapping dots');
                 break;
             }
         } while (this.checkOverlap(x, y, items));
@@ -349,6 +356,14 @@ class TMTCanvasManager {
                 const customPos = this.tmtSettings.customPositions[i];
                 x = (customPos.x / 100) * this.canvas.width;
                 y = (customPos.y / 100) * this.canvas.height;
+
+                // Check if custom position overlaps and adjust if needed
+                if (this.checkOverlap(x, y, this.items)) {
+                    console.log(`Custom position ${i} overlaps, adjusting position...`);
+                    const adjustedPos = this.adjustPositionForNoOverlap(x, y, this.items);
+                    x = adjustedPos.x;
+                    y = adjustedPos.y;
+                }
             } else {
                 // Generate random position
                 const pos = this.generateRandomPosition(this.items);
@@ -360,6 +375,51 @@ class TMTCanvasManager {
         }
 
         this.drawItems();
+    }
+
+    adjustPositionForNoOverlap(x, y, items) {
+        const minDistance = this.tmtSettings.numberRadius * 2.5;
+        let adjustedX = x;
+        let adjustedY = y;
+
+        // Try different directions to find a non-overlapping spot
+        const directions = [
+            { dx: 0, dy: -minDistance }, // Up
+            { dx: minDistance, dy: 0 },  // Right
+            { dx: 0, dy: minDistance },  // Down
+            { dx: -minDistance, dy: 0 }, // Left
+            { dx: minDistance, dy: -minDistance }, // Up-Right
+            { dx: minDistance, dy: minDistance },  // Down-Right
+            { dx: -minDistance, dy: minDistance }, // Down-Left
+            { dx: -minDistance, dy: -minDistance } // Up-Left
+        ];
+
+        // Try the original position with small adjustments first
+        for (let attempt = 1; attempt <= 20; attempt++) {
+            for (const dir of directions) {
+                // Gradually increase distance from original position
+                const multiplier = attempt;
+                const testX = x + (dir.dx * multiplier);
+                const testY = y + (dir.dy * multiplier);
+
+                // Ensure within canvas bounds
+                const margin = this.tmtSettings.numberRadius * 2;
+                if (testX < margin || testX > this.canvas.width - margin ||
+                    testY < margin || testY > this.canvas.height - margin) {
+                    continue;
+                }
+
+                // Check if this position doesn't overlap
+                if (!this.checkOverlap(testX, testY, items)) {
+                    console.log(`Found non-overlapping position at offset: ${dir.dx * multiplier}, ${dir.dy * multiplier}`);
+                    return { x: testX, y: testY };
+                }
+            }
+        }
+
+        // If we can't find a nearby non-overlapping spot, generate a random position
+        console.log('Could not find nearby non-overlapping position, using random');
+        return this.generateRandomPosition(items);
     }
 
     createLine(x1, y1, x2, y2) {
@@ -398,8 +458,8 @@ class TMTCanvasManager {
         this.ctx.stroke();
         this.ctx.closePath();
 
-        // Draw text
-        this.ctx.font = 'bold 18px Arial';
+        // Draw text using textSize setting
+        this.ctx.font = `bold ${this.tmtSettings.textSize}px Arial`;
         this.ctx.fillStyle = isSelected ? '#ffffff' : '#1f2937';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
@@ -417,8 +477,8 @@ class TMTCanvasManager {
         this.ctx.stroke();
         this.ctx.closePath();
 
-        // Draw text
-        this.ctx.font = 'bold 18px Arial';
+        // Draw text using textSize setting
+        this.ctx.font = `bold ${this.tmtSettings.textSize}px Arial`;
         this.ctx.fillStyle = '#dc2626';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';

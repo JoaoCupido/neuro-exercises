@@ -25,6 +25,7 @@ function getFormData() {
         // TMT-specific data
         trailLength: document.getElementById('trailLengthInput').value,
         numberRadius: document.getElementById('numberRadiusInput').value,
+        textSize: document.getElementById('textSizeInput').value,
         symbolType: document.getElementById('symbolTypeSelect').value,
         reverseOrder: document.getElementById('reverseOrderCheck').checked,
         showTimer: document.getElementById('showTimerCheck').checked,
@@ -64,6 +65,7 @@ function buildURLParams(data) {
     // TMT-specific parameters
     if (data.trailLength && data.trailLength !== '10') params.append('trailLength', data.trailLength);
     if (data.numberRadius && data.numberRadius !== '30') params.append('numberRadius', data.numberRadius);
+    if (data.textSize && data.textSize !== '18') params.append('textSize', data.textSize);
     if (data.symbolType && data.symbolType !== 'numbers') params.append('symbolType', data.symbolType);
     if (data.reverseOrder) params.append('reverseOrder', 'true');
     if (!data.showTimer) params.append('showTimer', 'false');

@@ -2,6 +2,7 @@ export class TMTSettings {
     constructor(urlParams) {
         this.trailLength = parseInt(urlParams.get('trailLength') || '10');
         this.numberRadius = parseInt(urlParams.get('numberRadius') || '30');
+        this.textSize = parseInt(urlParams.get('textSize') || '18');
         this.symbolType = urlParams.get('symbolType') || 'numbers';
         this.reverseOrder = urlParams.get('reverseOrder') === 'true';
         this.showTimer = urlParams.get('showTimer') !== 'false';
