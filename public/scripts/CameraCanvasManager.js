@@ -1,3 +1,4 @@
+// CameraCanvasManager.js - Updated class
 class CameraCanvasManager {
     constructor() {
         this.urlParams = new URLSearchParams(window.location.search);
@@ -5,6 +6,9 @@ class CameraCanvasManager {
         this.loadingOverlay = document.getElementById('loadingOverlay');
         this.predictionDisplay = document.getElementById('predictionDisplay');
         this.predictionList = document.getElementById('predictionList');
+        this.errorDisplay = document.getElementById('errorDisplay');
+        this.errorMessage = document.getElementById('errorMessage');
+        this.retryButton = document.getElementById('retryButton');
 
         this.gamemode = this.urlParams.get('gamemode') || 'detectObject';
         this.cameraFacing = this.urlParams.get('cameraFacing') || 'user';
@@ -23,6 +27,7 @@ class CameraCanvasManager {
         this.model = null;
         this.predictions = [];
         this.displayPredictions = []; // Filtered predictions for display
+        this.cameraError = null;
 
         this.init();
     }
@@ -30,12 +35,81 @@ class CameraCanvasManager {
     async init() {
         this.setupCanvas();
         await this.setupCamera();
+        if (this.cameraError) {
+            this.showCameraError();
+            return;
+        }
         this.applyCameraOpacity();
         await this.loadScripts();
         await this.loadModels();
         this.setupDisplayPosition();
         this.hideLoading();
         this.startRendering();
+    }
+
+    showCameraError() {
+        // Hide loading overlay
+        if (this.loadingOverlay) this.loadingOverlay.style.display = 'none';
+
+        // Set error message
+        if (this.errorMessage) {
+            let message = "Unable to access the camera. ";
+
+            if (this.cameraError.name === 'NotAllowedError') {
+                message += "Camera permission was denied. Please allow camera access in your browser settings.";
+            } else if (this.cameraError.name === 'NotFoundError') {
+                message += "No camera found on this device.";
+            } else if (this.cameraError.name === 'NotReadableError') {
+                message += "Camera is already in use by another application.";
+            } else if (this.cameraError.name === 'OverconstrainedError') {
+                message += "The requested camera configuration is not available.";
+            } else {
+                message += "Please check your camera connection and permissions.";
+            }
+
+            this.errorMessage.textContent = message;
+        }
+
+        // Show error display
+        if (this.errorDisplay) this.errorDisplay.classList.remove('hidden');
+
+        // Setup retry button
+        if (this.retryButton) {
+            this.retryButton.onclick = () => this.retryCameraAccess();
+        }
+    }
+
+    hideCameraError() {
+        if (this.errorDisplay) this.errorDisplay.classList.add('hidden');
+    }
+
+    async retryCameraAccess() {
+        this.hideCameraError();
+        if (this.loadingOverlay) this.loadingOverlay.style.display = 'flex';
+
+        try {
+            // Stop any existing stream
+            if (this.video.srcObject) {
+                const stream = this.video.srcObject;
+                const tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+                this.video.srcObject = null;
+            }
+
+            this.cameraError = null;
+            await this.setupCamera();
+
+            if (this.cameraError) {
+                this.showCameraError();
+            } else {
+                this.applyCameraOpacity();
+                this.hideLoading();
+            }
+        } catch (err) {
+            console.error("Retry failed:", err);
+            this.cameraError = err;
+            this.showCameraError();
+        }
     }
 
     setupCanvas() {
@@ -109,14 +183,42 @@ class CameraCanvasManager {
 
     async setupCamera() {
         try {
+            // Check if media devices are available
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                throw new Error('Camera API not supported in this browser');
+            }
+
             const mediaStream = await navigator.mediaDevices.getUserMedia({
                 audio: false,
-                video: { facingMode: this.cameraFacing }
+                video: {
+                    facingMode: this.cameraFacing,
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                }
             });
+
+            // Check if stream has video tracks
+            const videoTracks = mediaStream.getVideoTracks();
+            if (videoTracks.length === 0) {
+                throw new Error('No video track found in camera stream');
+            }
+
             this.video.srcObject = mediaStream;
+
+            // Wait for video to be ready
+            await new Promise((resolve, reject) => {
+                this.video.onloadedmetadata = () => resolve();
+                this.video.onerror = () => reject(new Error('Video failed to load'));
+                setTimeout(() => resolve(), 1000); // Fallback timeout
+            });
+
             await this.video.play();
+            this.cameraError = null;
+
         } catch (err) {
             console.error("Camera access failed:", err);
+            this.cameraError = err;
+            // Don't throw here, let the error handling in init() handle it
         }
     }
 
