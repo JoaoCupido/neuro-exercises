@@ -144,18 +144,130 @@ async function copyToClipboard() {
 }
 
 // Custom positions functionality
+// Enhanced version that uses the same validation logic as the main app
 function generateRandomPositions() {
     const trailLength = parseInt(document.getElementById('trailLengthInput').value);
+    const numberRadius = parseInt(document.getElementById('numberRadiusInput').value) || 30;
     const positions = [];
 
+    // Create a mock canvas for accurate calculations
+    const mockCanvas = {
+        width: 1920,
+        height: 1080,
+        items: {}
+    };
+
+    // Maximum attempts to find a non-overlapping position
+    const maxAttemptsPerDot = 500;
+
     for (let i = 0; i < trailLength; i++) {
-        const x = (Math.random() * 90 + 5).toFixed(2);
-        const y = (Math.random() * 90 + 5).toFixed(2);
-        positions.push({
-            x: parseFloat(x),
-            y: parseFloat(y)
-        });
+        let positionFound = false;
+        let attempts = 0;
+        let xPercent, yPercent;
+
+        do {
+            // Generate random position with margin from edges
+            const margin = numberRadius * 2;
+            const minX = margin;
+            const maxX = mockCanvas.width - margin;
+            const minY = margin;
+            const maxY = mockCanvas.height - margin;
+
+            // Generate random coordinates
+            const x = minX + Math.random() * (maxX - minX);
+            const y = minY + Math.random() * (maxY - minY);
+
+            // Check for overlap with existing items
+            let overlaps = false;
+            for (const itemId in mockCanvas.items) {
+                const existingPos = mockCanvas.items[itemId];
+                const distance = Math.sqrt(Math.pow(x - existingPos.x, 2) + Math.pow(y - existingPos.y, 2));
+                const minDistance = numberRadius * 2.5; // Same as in main code
+
+                if (distance < minDistance) {
+                    overlaps = true;
+                    break;
+                }
+            }
+
+            if (!overlaps) {
+                // Convert to percentages
+                xPercent = (x / mockCanvas.width) * 100;
+                yPercent = (y / mockCanvas.height) * 100;
+
+                // Add to mock canvas items for future overlap checks
+                mockCanvas.items[i] = { x, y };
+
+                // Add to positions array
+                positions.push({
+                    x: parseFloat(xPercent.toFixed(2)),
+                    y: parseFloat(yPercent.toFixed(2))
+                });
+
+                positionFound = true;
+            }
+
+            attempts++;
+
+            if (attempts >= maxAttemptsPerDot) {
+                console.warn(`Max attempts reached for dot ${i + 1}, adjusting parameters`);
+                // If we can't find a non-overlapping position, use the last generated one
+                // but reduce the radius temporarily to make it fit
+                const tempRadius = numberRadius * 0.8;
+                const tempMinDistance = tempRadius * 2.5;
+
+                let foundWithReducedRadius = false;
+                for (let retry = 0; retry < 100; retry++) {
+                    const x = minX + Math.random() * (maxX - minX);
+                    const y = minY + Math.random() * (maxY - minY);
+
+                    let tempOverlaps = false;
+                    for (const itemId in mockCanvas.items) {
+                        const existingPos = mockCanvas.items[itemId];
+                        const distance = Math.sqrt(Math.pow(x - existingPos.x, 2) + Math.pow(y - existingPos.y, 2));
+
+                        if (distance < tempMinDistance) {
+                            tempOverlaps = true;
+                            break;
+                        }
+                    }
+
+                    if (!tempOverlaps) {
+                        xPercent = (x / mockCanvas.width) * 100;
+                        yPercent = (y / mockCanvas.height) * 100;
+
+                        mockCanvas.items[i] = { x, y };
+                        positions.push({
+                            x: parseFloat(xPercent.toFixed(2)),
+                            y: parseFloat(yPercent.toFixed(2))
+                        });
+
+                        foundWithReducedRadius = true;
+                        break;
+                    }
+                }
+
+                if (!foundWithReducedRadius) {
+                    // Last resort: just use a random position
+                    xPercent = Math.random() * 80 + 10;
+                    yPercent = Math.random() * 80 + 10;
+                    positions.push({
+                        x: parseFloat(xPercent.toFixed(2)),
+                        y: parseFloat(yPercent.toFixed(2))
+                    });
+                }
+
+                positionFound = true;
+            }
+
+        } while (!positionFound);
     }
+
+    // Sort positions to make them more readable in the JSON
+    positions.sort((a, b) => {
+        if (a.x !== b.x) return a.x - b.x;
+        return a.y - b.y;
+    });
 
     document.getElementById('customPositionsInput').value = JSON.stringify(positions, null, 2);
     generateURL();
