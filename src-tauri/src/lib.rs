@@ -18,10 +18,13 @@ pub fn run() {
             }
 
             if let Some(window) = app.get_webview_window("main") {
-                if args.iter().any(|a| a == "--hidden") {
-                    window.hide().unwrap();
-                } else {
-                    window.show().unwrap();
+                #[cfg(not(any(target_os = "android", target_os = "ios")))]
+                {
+                    if args.iter().any(|a| a == "--hidden") {
+                        window.hide().unwrap();
+                    } else {
+                        window.show().unwrap();
+                    }
                 }
             }
 

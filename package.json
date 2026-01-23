@@ -9,7 +9,16 @@
     "preview": "astro preview",
     "tauri-dev": "npx tauri dev",
     "tauri-debug": "npx tauri build --debug",
-    "tauri-build": "npx tauri build"
+    "tauri-build": "npx tauri build",
+
+    "android-init": "tauri android init",
+    "android-dev": "npx tauri android dev",
+    "android-dev-phone" : "npx tauri android dev 'M2007J17G'",
+    "android-build": "npx tauri android build",
+
+    "tauri": "tauri",
+
+    "update-icon": "npx tauri icon"
   },
   "dependencies": {
     "@lucide/astro": "^0.552.0",
