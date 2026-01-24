@@ -31,6 +31,11 @@ import "../styles/globals.css";
         const windowTauri = await safeIsTauri();
         if (!windowTauri) return; // Prevents running in normal browser
 
+        let currentPlatform = "web";
+        const os = await import("@tauri-apps/plugin-os");
+        currentPlatform = os.platform();
+        if (currentPlatform === "android" || currentPlatform === "ios") return;
+
         const goBack = await MenuItem.new({
             id: "go-back",
             text: "Go Back",

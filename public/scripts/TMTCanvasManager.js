@@ -507,7 +507,7 @@ class TMTCanvasManager {
         }
 
         // Hide buttons if configured
-        const buttonContainer = this.popup.querySelector('.flex.gap-4');
+        const buttonContainer = document.getElementById('buttonContainer');
         if (this.tmtSettings.hidePopupButtons && buttonContainer) {
             buttonContainer.classList.add('hidden');
         }

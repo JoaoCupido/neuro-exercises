@@ -3,42 +3,40 @@ import Layout from '../../layouts/Layout.astro';
 ---
 
 <Layout title="Trail Making Test - Neuro Exercises" hideNavbar={true}>
-    <main class="min-h-screen bg-background">
-        <div class="min-h-screen relative h-screen w-screen">
-            <!-- Timer Display -->
-            <div id="timer" class="z-50 absolute top-4 right-4 bg-card border border-border rounded-lg px-4 py-2 text-foreground font-medium shadow-lg w-36 text-center">
-                0
-            </div>
+    <main class="min-h-screen bg-background relative">
+        <!-- Timer Display -->
+        <div id="timer" class="z-50 fixed top-4 right-4 bg-card border border-border rounded-lg px-4 py-2 text-foreground font-medium shadow-lg w-36 text-center">
+            0
+        </div>
 
-            <!-- Results Popup -->
-            <div id="popup" class="absolute inset-0 bg-black/50 flex items-center justify-center hidden z-50">
-                <div class="bg-card border border-border rounded-lg p-8 w-1/3 h-1/3 mx-4 shadow-xl flex flex-col text-center justify-center">
-                    <h3 class="text-2xl font-bold text-foreground mb-4">Test Completed!</h3>
-                    <div class="space-y-3 mb-6">
-                        <p id="popupTimer" class="text-foreground">Time: 0 seconds</p>
-                        <p id="popupErrors" class="text-foreground">Errors: 0</p>
-                    </div>
-                    <div class="flex gap-4 mt-auto">
-                        <button id="restartButton" class="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity">
-                            Restart Test
-                        </button>
-                        <a
-                                href={`./`}
-                                class="flex-1 px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-accent transition-colors text-center"
-                        >
-                            Back to Menu
-                        </a>
-                    </div>
+        <!-- Results Popup - Now outside the main container -->
+        <div id="popup" class="fixed inset-0 flex items-center justify-center bg-black/70 z-50 hidden">
+            <div class="bg-card border border-border rounded-lg p-8 max-w-md mx-4 text-center">
+                <h3 class="text-2xl font-bold text-foreground mb-4">Test Completed!</h3>
+                <div class="space-y-3 mb-6">
+                    <p id="popupTimer" class="text-foreground">Time: 0 seconds</p>
+                    <p id="popupErrors" class="text-foreground">Errors: 0</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3" id="buttonContainer">
+                    <button id="restartButton" class="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                        Restart Test
+                    </button>
+                    <a
+                            href={`./`}
+                            class="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-medium hover:bg-accent transition-colors text-center"
+                    >
+                        Back to Menu
+                    </a>
                 </div>
             </div>
+        </div>
 
-            <!-- TMT Container -->
-            <div class="absolute inset-0">
-                <canvas id="bgColorCanvas" class="absolute inset-0"></canvas>
-                <canvas id="bgImageCanvas" class="absolute inset-0"></canvas>
-                <canvas id="gridCanvas" class="absolute inset-0 pointer-events-none"></canvas>
-                <canvas id="trailCanvas" class="absolute inset-0"></canvas>
-            </div>
+        <!-- Canvas Container Only -->
+        <div class="absolute inset-0">
+            <canvas id="bgColorCanvas" class="absolute inset-0"></canvas>
+            <canvas id="bgImageCanvas" class="absolute inset-0"></canvas>
+            <canvas id="gridCanvas" class="absolute inset-0 pointer-events-none"></canvas>
+            <canvas id="trailCanvas" class="absolute inset-0"></canvas>
         </div>
     </main>
 

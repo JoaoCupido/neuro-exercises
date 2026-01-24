@@ -1,0 +1,54 @@
+---
+// components/ImportUrl.astro
+const { exercise } = Astro.props;
+---
+
+<div class="bg-card border border-border rounded-lg p-4 sm:p-6 mb-6 sm:mb-8">
+    <h2 class="text-lg sm:text-xl font-bold text-foreground mb-3 sm:mb-4">Import from URL</h2>
+
+    <div class="space-y-4 sm:space-y-6">
+        <div>
+            <label for="importUrlInput" class="block text-sm font-medium text-foreground mb-2">
+                Paste {exercise} URL
+            </label>
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                <input
+                        type="text"
+                        id="importUrlInput"
+                        placeholder={`https://example.com/tmt?trailLength=15&bgColor=%23f0f0f0`}
+                        class="w-full px-3 sm:px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary text-sm sm:text-base"
+                />
+                <button
+                        type="button"
+                        id="importBtn"
+                        class="px-4 sm:px-6 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity whitespace-nowrap text-sm sm:text-base"
+                >
+                    Import Settings
+                </button>
+            </div>
+        </div>
+
+        <div>
+            <label for="importParamInput" class="block text-sm font-medium text-foreground mb-2">
+                Or paste only parameters
+            </label>
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                <textarea
+                        id="importParamInput"
+                        placeholder="trailLength=15&bgColor=%23f0f0f0&symbolType=numbers-letters"
+                        class="w-full h-20 sm:h-24 px-3 sm:px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary font-mono text-xs sm:text-sm"
+                ></textarea>
+                <button
+                        type="button"
+                        id="importParamBtn"
+                        class="px-4 sm:px-6 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-accent transition-colors whitespace-nowrap text-sm sm:text-base self-start sm:self-auto"
+                >
+                    Import
+                </button>
+            </div>
+            <p class="text-xs sm:text-sm text-muted-foreground mt-2">
+                Paste just the query parameters (everything after the ?)
+            </p>
+        </div>
+    </div>
+</div>

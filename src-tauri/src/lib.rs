@@ -7,6 +7,7 @@ pub fn run() {
     let args: Vec<String> = env::args().collect();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_localhost::Builder::new(port).build())
         .setup(move |app| {
             if cfg!(debug_assertions) {
