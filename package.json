@@ -11,11 +11,12 @@
     "tauri-debug": "npx tauri build --debug",
     "tauri-build": "npx tauri build",
     "android-init": "tauri android init",
-    "android-dev": "rimraf src-tauri/gen/android && rimraf dist && tauri build && tauri android init && npx tauri icon && npx tauri android dev",
-    "android-dev-phone": "rimraf src-tauri/gen/android && rimraf dist && tauri build && tauri android init && npx tauri icon && npx tauri android dev 'M2007J17G'",
+    "android-dev": "rimraf src-tauri/gen/android && rimraf dist && tauri build && tauri android init && npx tauri icon ./mobile-icon.png && npx tauri android dev",
+    "android-dev-phone": "rimraf src-tauri/gen/android && rimraf dist && tauri build && tauri android init && npx tauri icon ./mobile-icon.png && npx tauri android dev 'M2007J17G'",
     "android-build": "rimraf src-tauri/gen/android && rimraf dist && tauri build && tauri android init && npx tauri android build",
     "tauri": "tauri",
-    "update-icon": "npx tauri icon"
+    "update-desktop-icon": "npx tauri icon ./desktop-icon.png",
+    "update-mobile-icon": "npx tauri icon ./mobile-icon.png"
   },
   "dependencies": {
     "@lucide/astro": "^0.552.0",
