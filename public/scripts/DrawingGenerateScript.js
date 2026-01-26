@@ -94,7 +94,7 @@ function buildURLParams(data) {
         params.append('bgColor', encodeURIComponent(data.bgColor));
     }
 
-    if (data.bgOpacity && data.bgOpacity !== '50') params.append('bgOpacity', data.bgOpacity);
+    if (data.bgOpacity && data.bgOpacity !== '100') params.append('bgOpacity', data.bgOpacity);
 
     if (data.bgImage) {
         params.append('bgImage', data.bgImage);

@@ -12,7 +12,7 @@ import "../styles/globals.css";
     <link rel="icon" href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + `/favicon.png`} />
     <title>{title}</title>
 </head>
-<body class="min-h-screen bg-background text-foreground">
+<body class="min-h-screen text-foreground">
 {!hideNavbar && <Navbar />}
 <slot />
 <script>

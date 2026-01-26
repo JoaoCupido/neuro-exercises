@@ -1,6 +1,6 @@
 export class BackgroundSettings {
     constructor(urlParams) {
-        this.bgOpacity = parseInt(urlParams.get('bgOpacity') || '50') / 100;
+        this.bgOpacity = parseInt(urlParams.get('bgOpacity') || '100') / 100;
         this.bgImageSize = parseInt(urlParams.get('bgImageSize') || '100');
         this.bgColor = urlParams.get('bgColor')?.replace("%23", "#") || '#ffffff';
         this.bgImagePosition = {
