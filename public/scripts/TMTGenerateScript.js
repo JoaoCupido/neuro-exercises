@@ -97,9 +97,10 @@ function buildURLParams(data) {
         params.append('bgColor', encodeURIComponent(data.bgColor));
     }
 
+    if (data.bgOpacity && data.bgOpacity !== '50') params.append('bgOpacity', data.bgOpacity);
+
     if (data.bgImage) {
         params.append('bgImage', data.bgImage);
-        if (data.bgOpacity && data.bgOpacity !== '50') params.append('bgOpacity', data.bgOpacity);
         if (data.bgImageSize && data.bgImageSize !== '100') params.append('bgImageSize', data.bgImageSize);
         if (data.bgPosX && data.bgPosX !== '50') params.append('bgImagePosX', data.bgPosX);
         if (data.bgPosY && data.bgPosY !== '50') params.append('bgImagePosY', data.bgPosY);

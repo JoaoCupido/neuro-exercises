@@ -414,7 +414,7 @@ class DrawingCanvasManager {
         this.opacityValue = document.getElementById('opacityValue');
         this.opacityControl = document.getElementById('opacityControl');
 
-        if (this.urlParams.get('bgImage') && this.showInputs.backgroundInputs) {
+        if (this.showInputs.backgroundInputs) {
             this.opacityControl.classList.remove('hidden');
             this.opacitySlider.value = (this.backgroundSettings.bgOpacity * 100).toString();
             this.opacityValue.textContent = `${Math.round(this.backgroundSettings.bgOpacity * 100)}%`;
@@ -423,6 +423,8 @@ class DrawingCanvasManager {
         this.opacitySlider.oninput = () => {
             this.backgroundSettings.bgOpacity = parseInt(this.opacitySlider.value) / 100;
             this.opacityValue.textContent = `${this.opacitySlider.value}%`;
+
+            this.drawBackgroundColor();
             this.loadBackgroundImage();
         };
 
@@ -453,6 +455,7 @@ class DrawingCanvasManager {
 
         this.bgColorPicker.oninput = () => {
             this.backgroundSettings.bgColor = this.bgColorPicker.value;
+            this.backgroundSettings.baseBgColor = this.bgColorPicker.value;
             this.drawBackgroundColor();
             this.loadBackgroundImage();
         };
@@ -616,7 +619,29 @@ class DrawingCanvasManager {
     }
 
     drawBackgroundColor() {
-        this.bgColorCtx.fillStyle = this.backgroundSettings.bgColor;
+        // Extract opacity from background settings
+        const bgColor = this.backgroundSettings.bgColor;
+        const opacity = this.backgroundSettings.bgOpacity;
+
+        // Convert hex color to rgba with opacity
+        let rgbaColor;
+        if (bgColor.startsWith('#')) {
+            const hex = bgColor.replace('#', '');
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            rgbaColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        } else {
+            // If it's already an rgba or other format, add opacity
+            rgbaColor = bgColor;
+            // Simple attempt to convert to rgba with opacity
+            if (bgColor.startsWith('rgb(')) {
+                rgbaColor = bgColor.replace('rgb(', 'rgba(').replace(')', `, ${opacity})`);
+            }
+        }
+
+        this.bgColorCtx.clearRect(0, 0, this.bgColorCanvas.width, this.bgColorCanvas.height);
+        this.bgColorCtx.fillStyle = rgbaColor;
         this.bgColorCtx.fillRect(0, 0, this.bgColorCanvas.width, this.bgColorCanvas.height);
     }
 
@@ -631,6 +656,8 @@ class DrawingCanvasManager {
         img.crossOrigin = 'anonymous';
         img.onload = () => {
             this.bgImageCtx.clearRect(0, 0, this.bgImageCanvas.width, this.bgImageCanvas.height);
+
+            // Apply opacity to background image
             this.bgImageCtx.globalAlpha = this.backgroundSettings.bgOpacity;
 
             if (this.backgroundSettings.isColoringBookImage) {

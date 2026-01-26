@@ -9,5 +9,7 @@ export class BackgroundSettings {
         };
         this.isColoringBookImage = urlParams.get('isColoringBookImage') === 'true';
         this.bgImage = urlParams.get('bgImage');
+
+        this.baseBgColor = this.bgColor;
     }
 }
