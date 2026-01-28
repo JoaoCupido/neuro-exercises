@@ -13,6 +13,7 @@
     "android-init": "tauri android init",
     "android-dev": "rimraf src-tauri/gen/android && rimraf dist && tauri android init && npx tauri icon ./mobile-icon.png && npx tauri android dev",
     "android-dev-phone": "rimraf src-tauri/gen/android && rimraf dist && tauri android init && npx tauri icon ./mobile-icon.png && npx tauri android dev 'M2007J17G'",
+    "android-debug": "rimraf src-tauri/gen/android && rimraf dist && tauri android init && npx tauri icon ./mobile-icon.png && npx tauri android build --debug",
     "android-build": "rimraf src-tauri/gen/android && rimraf dist && tauri android init && npx tauri icon ./mobile-icon.png && npx tauri android build",
     "tauri": "tauri",
     "update-desktop-icon": "npx tauri icon ./desktop-icon.png",
