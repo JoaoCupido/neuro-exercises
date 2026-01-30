@@ -150,6 +150,144 @@ body {
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   cursor: pointer;
+}
+
+
+/* ======================================================
+   TOOLBAR SIZE VARIANTS
+   ====================================================== */
+
+/* ---------- BASE RESET (important) ---------- */
+#toolbar .tab-content button {
+  line-height: 1;
+}
+
+#toolbar .tab-content svg {
+  flex-shrink: 0;
+}
+
+/* ======================================================
+   SMALL
+   ====================================================== */
+
+.toolbar-sm .tab-content {
+  font-size: 0.75rem; /* text-xs */
+}
+
+.toolbar-sm .tab-content button {
+  padding: 0.35rem 0.55rem;
+  border-radius: 0.4rem;
+}
+
+.toolbar-sm .tab-content svg {
+  width: 14px;
+  height: 14px;
+}
+
+.toolbar-sm .tab-content input[type="range"] {
+  height: 1.25rem;
+}
+
+.toolbar-sm .tab-content #colorButtons button {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+}
+
+/* ======================================================
+   MEDIUM (explicit, not default)
+   ====================================================== */
+
+.toolbar-md .tab-content {
+  font-size: 0.875rem; /* text-sm */
+}
+
+.toolbar-md .tab-content button {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.toolbar-md .tab-content svg {
+  width: 16px;
+  height: 16px;
+}
+
+.toolbar-md .tab-content input[type="range"] {
+  height: 1.4rem;
+}
+
+.toolbar-md .tab-content #colorButtons button {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+}
+
+/* ======================================================
+   LARGE
+   ====================================================== */
+
+.toolbar-lg .tab-content {
+  font-size: 1rem; /* text-base */
+}
+
+.toolbar-lg .tab-content button {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+}
+
+.toolbar-lg .tab-content svg {
+  width: 20px;
+  height: 20px;
+}
+
+.toolbar-lg .tab-content input[type="range"] {
+  height: 1.6rem;
+}
+
+.toolbar-lg .tab-content #colorButtons button {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+}
+
+/* ======================================================
+   TOOLBAR SIZE VARIANTS - TAB NAVIGATION ONLY
+   ====================================================== */
+
+/* Small Toolbar */
+.toolbar-sm #tabNavigation button {
+  padding: 0.625rem 1rem; /* Increased from 0.5rem 0.75rem */
+  font-size: 0.875rem; /* Increased from 0.75rem */
+  gap: 0.375rem; /* Increased from 0.25rem */
+}
+
+.toolbar-sm #tabNavigation button svg {
+  width: 14px; /* Increased from 12px */
+  height: 14px; /* Increased from 12px */
+}
+
+/* Medium Toolbar (explicit, not default) */
+.toolbar-md #tabNavigation button {
+  padding: 0.75rem 1.125rem; /* Increased from 0.625rem 0.875rem */
+  font-size: 1rem; /* Increased from 0.875rem */
+  gap: 0.5rem; /* Increased from 0.375rem */
+}
+
+.toolbar-md #tabNavigation button svg {
+  width: 16px; /* Increased from 14px */
+  height: 16px; /* Increased from 14px */
+}
+
+/* Large Toolbar */
+.toolbar-lg #tabNavigation button {
+  padding: 0.875rem 1.25rem; /* Increased from 0.75rem 1rem */
+  font-size: 1.125rem; /* Increased from 1rem */
+  gap: 0.625rem; /* Increased from 0.5rem */
+}
+
+.toolbar-lg #tabNavigation button svg {
+  width: 18px; /* Increased from 16px */
+  height: 18px; /* Increased from 16px */
 }

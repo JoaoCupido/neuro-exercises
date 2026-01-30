@@ -20,6 +20,7 @@ class DrawingCanvasManager {
         this.setupEventListeners();
         this.setupTabs();
         this.applyToolbarPosition();
+        this.applyToolbarSize();
         this.drawBackgroundColor();
         this.loadBackgroundImage();
         this.drawGrid();
@@ -31,10 +32,10 @@ class DrawingCanvasManager {
         this.bgImageCanvas = document.getElementById('bgImageCanvas');
         this.gridCanvas = document.getElementById('gridCanvas');
 
-        this.drawingCtx = this.drawingCanvas.getContext('2d');
-        this.bgColorCtx = this.bgColorCanvas.getContext('2d');
-        this.bgImageCtx = this.bgImageCanvas.getContext('2d');
-        this.gridCtx = this.gridCanvas.getContext('2d');
+        this.drawingCtx = this.drawingCanvas.getContext('2d', { willReadFrequently: true });
+        this.bgColorCtx = this.bgColorCanvas.getContext('2d', { willReadFrequently: true });
+        this.bgImageCtx = this.bgImageCanvas.getContext('2d', { willReadFrequently: true });
+        this.gridCtx = this.gridCanvas.getContext('2d', { willReadFrequently: true });
 
         this.resizeCanvas();
         window.addEventListener('resize', () => this.resizeCanvas());
@@ -54,6 +55,7 @@ class DrawingCanvasManager {
         // Toolbar position
         this.toolbarPosition = this.urlParams.get('toolbarPosition') || 'up';
         this.hideToolbar = this.urlParams.get('hideToolbar') === 'true';
+        this.toolbarSize = this.urlParams.get('toolbarSize') || 'default';
 
         // Show inputs configuration
         this.setupShowInputs();
@@ -67,6 +69,7 @@ class DrawingCanvasManager {
         const showInputsParam = this.urlParams.get('showInputs');
         const defaultShowInputs = {
             eraserInput: true,
+            bucketInput: true,
             cursorSizeInput: true,
             backgroundInputs: true,
             gridInputs: true,
@@ -224,31 +227,93 @@ class DrawingCanvasManager {
         }
     }
 
+    applyToolbarSize() {
+        const toolbar = document.getElementById('toolbar');
+
+        // Reset size classes
+        toolbar.classList.remove(
+            'toolbar-sm',
+            'toolbar-md',
+            'toolbar-lg'
+        );
+
+        switch (this.toolbarSize) {
+            case 'small':
+                toolbar.classList.add('toolbar-sm');
+                break;
+            case 'large':
+                toolbar.classList.add('toolbar-lg');
+                break;
+            case 'medium':
+            default:
+                toolbar.classList.add('toolbar-md');
+        }
+    }
+
     setupColorButtons() {
         const colorPicker = document.getElementById('colorPicker');
         const toolDiv = document.getElementById('toolDiv');
-
         const colorButtons = document.getElementById('colorButtons');
+
+        // Clear existing content
         colorButtons.innerHTML = '';
         this.selectedColorButton = null;
 
+        // Remove previous classes
+        colorPicker.className = 'flex items-center gap-2 flex-1 min-w-0 min-h-0 overflow-hidden';
+        colorButtons.className = 'p-2 ';
+
+        // Remove previous grid classes from toolDiv if needed
+        toolDiv.classList.remove("grid", "grid-rows-2", "grid-flow-col", "grid-cols-2");
+        toolDiv.classList.add("flex-nowrap", "flex-shrink-0");
+
+        // Apply proper layout based on toolbar position
         switch(this.toolbarPosition) {
             case 'up':
             case 'down':
-                colorPicker.classList.add("flex-row")
-                colorButtons.classList.add("grid", "grid-rows-2", "grid-flow-col");
-                toolDiv.classList.add("grid", "grid-rows-2", "grid-flow-col");
+                // Horizontal layout - take remaining width
+                colorPicker.classList.add("flex-row", "items-center", "min-w-0", "justify-items-end");
+                colorButtons.classList.add(
+                    "flex",
+                    "flex-row",
+                    "items-center",
+                    "gap-2",
+                    "overflow-x-auto",
+                    "overflow-y-hidden",
+                    "w-full",
+                    "min-w-0",
+                    "scrollbar-thin", // Add scrollbar styling
+                    "scrollbar-thumb-secondary",
+                    "scrollbar-track-transparent",
+                    "pb-2" // Add some padding for scrollbar
+                );
                 break;
             case 'left':
             case 'right':
-                colorButtons.classList.add("grid", "grid-cols-2");
-                toolDiv.classList.add("grid", "grid-cols-2");
+                // Vertical layout for side positions
+                colorPicker.classList.add("flex-col", "items-center", "min-h-0", "h-full");
+                colorButtons.classList.add(
+                    "flex",
+                    "flex-col",
+                    "items-center",
+                    "gap-2",
+                    "overflow-y-auto",
+                    "overflow-x-hidden",
+                    "max-h-[calc(93vh-200px)]", // Add max height constraint
+                    "h-full",
+                    "min-h-0",
+                    "scrollbar-thin", // Add scrollbar styling
+                    "scrollbar-thumb-secondary",
+                    "scrollbar-track-transparent",
+                    "pr-2" // Add some padding for scrollbar
+                );
                 break;
         }
 
+        // Add color buttons directly to colorButtons div
         this.availableColors.forEach((color, index) => {
             const btn = document.createElement('button');
-            btn.className = 'w-8 h-8 rounded-lg border-2 border-border hover:scale-110 transition-transform';
+            btn.className = 'rounded-lg border-2 border-border hover:scale-110 transition-transform flex-shrink-0';
             btn.style.backgroundColor = color;
             btn.onclick = () => this.selectColor(color, btn);
 
@@ -274,19 +339,26 @@ class DrawingCanvasManager {
         this.selectedColorButton = button;
 
         this.currentColor = color;
-        this.currentTool = 'pencil';
         this.updateToolButtons();
     }
 
     setupToolButtons() {
         this.pencilBtn = document.getElementById('pencilBtn');
         this.eraserBtn = document.getElementById('eraserBtn');
+        this.bucketBtn = document.getElementById('bucketBtn'); // NEW
 
         // Show/hide eraser based on showInputs
         if (this.showInputs.eraserInput) {
             this.eraserBtn.classList.remove('hidden');
         } else {
             this.eraserBtn.classList.add('hidden');
+        }
+
+        // Show/hide eraser based on showInputs
+        if (this.showInputs.bucketInput) {
+            this.bucketBtn.classList.remove('hidden');
+        } else {
+            this.bucketBtn.classList.add('hidden');
         }
 
         this.pencilBtn.onclick = () => {
@@ -299,21 +371,133 @@ class DrawingCanvasManager {
             this.updateToolButtons();
         };
 
+        this.bucketBtn.onclick = () => {
+            this.currentTool = 'bucket';
+            this.updateToolButtons();
+        };
+
         this.updateToolButtons();
     }
 
     updateToolButtons() {
-        if (this.currentTool === 'pencil') {
-            this.pencilBtn.classList.add('bg-primary', 'text-primary-foreground');
-            this.pencilBtn.classList.remove('bg-secondary', 'text-secondary-foreground');
-            this.eraserBtn.classList.remove('bg-primary', 'text-primary-foreground');
-            this.eraserBtn.classList.add('bg-secondary', 'text-secondary-foreground');
-        } else {
-            this.eraserBtn.classList.add('bg-primary', 'text-primary-foreground');
-            this.eraserBtn.classList.remove('bg-secondary', 'text-secondary-foreground');
-            this.pencilBtn.classList.remove('bg-primary', 'text-primary-foreground');
-            this.pencilBtn.classList.add('bg-secondary', 'text-secondary-foreground');
+        // Reset all buttons
+        [this.pencilBtn, this.eraserBtn, this.bucketBtn].forEach(btn => {
+            btn.classList.remove('bg-primary', 'text-primary-foreground');
+            btn.classList.add('bg-secondary', 'text-secondary-foreground');
+        });
+
+        // Activate the current tool button
+        switch(this.currentTool) {
+            case 'pencil':
+                this.pencilBtn.classList.add('bg-primary', 'text-primary-foreground');
+                this.pencilBtn.classList.remove('bg-secondary', 'text-secondary-foreground');
+                break;
+            case 'eraser':
+                this.eraserBtn.classList.add('bg-primary', 'text-primary-foreground');
+                this.eraserBtn.classList.remove('bg-secondary', 'text-secondary-foreground');
+                break;
+            case 'bucket':
+                this.bucketBtn.classList.add('bg-primary', 'text-primary-foreground');
+                this.bucketBtn.classList.remove('bg-secondary', 'text-secondary-foreground');
+                break;
         }
+    }
+
+    // Add this method after the stopDrawing method
+    bucketFill(startX, startY, fillColor) {
+        startX = Math.floor(startX);
+        startY = Math.floor(startY);
+
+        const width = this.drawingCanvas.width;
+        const height = this.drawingCanvas.height;
+        const imageData = this.drawingCtx.getImageData(0, 0, width, height);
+        const data = imageData.data;
+
+        const startIdx = (startY * width + startX) * 4;
+        const targetColor = [
+            data[startIdx],
+            data[startIdx + 1],
+            data[startIdx + 2],
+            data[startIdx + 3]
+        ];
+
+        const fillRgb = this.hexToRgb(fillColor);
+        const tolerance = 50; // higher tolerance to catch anti-aliased pixels
+
+        // Exit if starting pixel is already fill color
+        if (this.colorsMatch(...targetColor, fillRgb[0], fillRgb[1], fillRgb[2], 255, tolerance)) return;
+
+        const queue = [[startX, startY]];
+
+        while (queue.length) {
+            const [x, y] = queue.shift();
+            if (x < 0 || x >= width || y < 0 || y >= height) continue;
+
+            const idx = (y * width + x) * 4;
+            const r = data[idx], g = data[idx + 1], b = data[idx + 2], a = data[idx + 3];
+
+            // Treat almost matching pixels or low alpha as fillable
+            if (
+                !this.colorsMatch(r, g, b, a, ...targetColor, tolerance) &&
+                a > 10 // keep partially transparent pixels out
+            ) continue;
+
+            // Fill pixel fully
+            data[idx] = fillRgb[0];
+            data[idx + 1] = fillRgb[1];
+            data[idx + 2] = fillRgb[2];
+            data[idx + 3] = 255;
+
+            // Add neighbors
+            queue.push([x + 1, y]);
+            queue.push([x - 1, y]);
+            queue.push([x, y + 1]);
+            queue.push([x, y - 1]);
+        }
+
+        this.drawingCtx.putImageData(imageData, 0, 0);
+    }
+
+    // Helper method to convert hex color to RGB
+    hexToRgb(hex) {
+        // Remove # if present
+        hex = hex.replace('#', '');
+
+        // Parse hex values
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+
+        return [r, g, b];
+    }
+
+    // Helper method to check if colors match (with tolerance)
+    colorsMatch(r1, g1, b1, a1, r2, g2, b2, a2, tolerance = 1) {
+        // Compare colors with tolerance
+        return Math.abs(r1 - r2) <= tolerance &&
+            Math.abs(g1 - g2) <= tolerance &&
+            Math.abs(b1 - b2) <= tolerance &&
+            Math.abs(a1 - a2) <= tolerance;
+    }
+
+    startDrawing(e) {
+        const rect = this.drawingCanvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (this.currentTool === 'bucket') {
+            this.saveState();
+            this.bucketFill(x, y, this.currentColor);
+            this.updateUndoRedoButtons();
+            return;
+        }
+
+        this.isDrawing = true;
+        this.lastX = x;
+        this.lastY = y;
+
+        // Save state when starting to draw
+        this.saveState();
     }
 
     setupUndoRedo() {
@@ -669,6 +853,8 @@ class DrawingCanvasManager {
             this.bgImageCtx.globalAlpha = 1;
         };
         img.src = bgImageParam;
+
+        this.screenshotDrawing();
     }
 
     processColoringBookImage(img) {
@@ -765,6 +951,8 @@ class DrawingCanvasManager {
         }
 
         this.gridCtx.globalAlpha = 1;
+
+        this.screenshotDrawing();
     }
 
     drawSolidGrid(width, height) {
@@ -826,16 +1014,6 @@ class DrawingCanvasManager {
         this.gridCtx.stroke();
     }
 
-    startDrawing(e) {
-        this.isDrawing = true;
-        const rect = this.drawingCanvas.getBoundingClientRect();
-        this.lastX = e.clientX - rect.left;
-        this.lastY = e.clientY - rect.top;
-
-        // Save state when starting to draw
-        this.saveState();
-    }
-
     draw(e) {
         if (!this.isDrawing) return;
 
@@ -862,10 +1040,63 @@ class DrawingCanvasManager {
 
         this.lastX = x;
         this.lastY = y;
+
+        this.screenshotDrawing();
     }
 
     stopDrawing() {
         this.isDrawing = false;
+    }
+
+    screenshotDrawing() {
+        const targetWidth = this.drawingCanvas.width / 4;
+        const targetHeight = this.drawingCanvas.height / 4;
+
+        // Create canvas at target size
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = targetWidth;
+        tempCanvas.height = targetHeight;
+        const tempCtx = tempCanvas.getContext('2d');
+
+        // Draw all layers in correct order for the screenshot:
+        // 1. Background color
+        tempCtx.drawImage(this.bgColorCanvas, 0, 0, this.drawingCanvas.width, this.drawingCanvas.height,
+            0, 0, targetWidth, targetHeight);
+
+        // 2. Background image (if any)
+        tempCtx.drawImage(this.bgImageCanvas, 0, 0, this.drawingCanvas.width, this.drawingCanvas.height,
+            0, 0, targetWidth, targetHeight);
+
+        // 3. Grid (if enabled)
+        tempCtx.drawImage(this.gridCanvas, 0, 0, this.drawingCanvas.width, this.drawingCanvas.height,
+            0, 0, targetWidth, targetHeight);
+
+        // 4. User drawing (top layer)
+        tempCtx.drawImage(this.drawingCanvas, 0, 0, this.drawingCanvas.width, this.drawingCanvas.height,
+            0, 0, targetWidth, targetHeight);
+
+        // Convert to JPEG with lower quality for smaller size
+        const base64Image = tempCanvas.toDataURL('image/jpeg');
+        const base64WithoutPrefix = base64Image.replace(/^data:image\/jpeg;base64,/, '');
+
+        if (window.vuplex) {
+            const sendData = {
+                type: "NeuroExercises",
+                activity: "Drawing",
+                dataNE: {
+                    image: base64WithoutPrefix,
+                    // Include that it's compressed
+                    compressed: true,
+                    original_width: this.drawingCanvas.width,
+                    original_height: this.drawingCanvas.height,
+                    compressed_width: targetWidth,
+                    compressed_height: targetHeight
+                }
+            };
+            window.vuplex.postMessage(JSON.stringify(sendData));
+        } else {
+            console.log("VUPLEX bridge not available");
+        }
     }
 }
 

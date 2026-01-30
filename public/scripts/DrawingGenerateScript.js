@@ -48,6 +48,7 @@ function getFormData() {
         customColors: customColorsInput.value,
         toolbarPosition: document.getElementById('toolbarPositionSelect').value,
         hideToolbar: document.getElementById('hideToolbarCheck').checked,
+        toolbarSize: document.getElementById('toolbarSizeSelect').value,
 
         bgColor: document.getElementById('bgColorInput').value,
         bgImage: document.getElementById('bgImageInput').value,
@@ -67,7 +68,8 @@ function getFormData() {
             cursorSizeInput: document.getElementById('cursorSizeInputCheck').checked,
             enableUndoRedoInput: document.getElementById('undoRedoInputCheck').checked,
             backgroundInputs: document.getElementById('backgroundInputsCheck').checked,
-            gridInputs: document.getElementById('gridInputsCheck').checked
+            gridInputs: document.getElementById('gridInputsCheck').checked,
+            bucketInput: document.getElementById('bucketInputCheck').checked
         }
     };
 }
@@ -78,6 +80,10 @@ function buildURLParams(data) {
     if (data.size && data.size !== '5') params.append('brushSize', data.size);
     if (data.colorMode === 'all') params.append('colors', '*');
     else if (data.customColors) params.append('colors', data.customColors);
+
+    if (data.toolbarSize && data.toolbarSize !== 'default') {
+        params.append('toolbarSize', data.toolbarSize);
+    }
 
     // Toolbar position (only include if not default 'up' AND not hiding toolbar)
     if (!data.hideToolbar && data.toolbarPosition && data.toolbarPosition !== 'up') {
@@ -123,7 +129,8 @@ function buildURLParams(data) {
         cursorSizeInput: true,
         enableUndoRedoInput: true,
         backgroundInputs: true,
-        gridInputs: true
+        gridInputs: true,
+        bucketInput: true
     };
 
     if (JSON.stringify(data.showInputs) !== JSON.stringify(defaultShowInputs)) {
@@ -269,6 +276,10 @@ function applyParameters(params) {
     // Toolbar settings
     setCheckbox('hideToolbarCheck', params.get('hideToolbar'));
     setSelect('toolbarPositionSelect', params.get('toolbarPosition'));
+    const toolbarSize = params.get('toolbarSize');
+    if (toolbarSize) {
+        setSelect('toolbarSizeSelect', toolbarSize);
+    }
 
     // Background parameters
     const bgColor = params.get('bgColor');
@@ -311,6 +322,7 @@ function applyParameters(params) {
             setCheckbox('undoRedoInputCheck', showInputs.enableUndoRedoInput?.toString());
             setCheckbox('backgroundInputsCheck', showInputs.backgroundInputs?.toString());
             setCheckbox('gridInputsCheck', showInputs.gridInputs?.toString());
+            setCheckbox('bucketInputCheck', showInputs.bucketInput?.toString());
         } catch (error) {
             console.warn('Invalid showInputs JSON:', error);
         }

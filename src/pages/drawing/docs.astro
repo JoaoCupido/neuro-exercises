@@ -119,6 +119,15 @@ import GridDocs from '../../components/GridDocs.astro';
                             />
 
                             <ParameterDoc
+                                    name="toolbarSize"
+                                    description="Controls the size of toolbar components. Options: default, small, medium, large."
+                                    type="String"
+                                    defaultValue="default"
+                                    examples={["/?toolbarSize=large"]}
+                                    codeExample="?toolbarSize=large"
+                            />
+
+                            <ParameterDoc
                                     name="toolbarPosition"
                                     description="Sets the position of the toolbar. Options: up, down, left, right."
                                     type="String"
@@ -139,7 +148,7 @@ import GridDocs from '../../components/GridDocs.astro';
                                     name="showInputs"
                                     description="Controls visibility of input controls in the toolbar. Use a JSON object with boolean values for each control type."
                                     type="JSON Object"
-                                    defaultValue='{"eraserInput":true,"cursorSizeInput":true,"enableUndoRedoInput":true,"backgroundInputs":true,"gridInputs":true}'
+                                    defaultValue='{"eraserInput":true,"cursorSizeInput":true,"enableUndoRedoInput":true,"backgroundInputs":true,"gridInputs":true,"bucketInput":true}'
                                     examples={[]}
                                     codeExample='?showInputs={"eraserInput":false,"gridInputs":false}'
                             />
@@ -148,6 +157,7 @@ import GridDocs from '../../components/GridDocs.astro';
                                 <h4 class="font-semibold text-foreground">Properties:</h4>
                                 <ul class="list-disc list-inside space-y-1 text-muted-foreground">
                                     <li><code>eraserInput</code> – Shows/hides the eraser tool button</li>
+                                    <li><code>bucketInput</code> – Shows/hides the bucket (paint fill) tool button</li>
                                     <li><code>cursorSizeInput</code> – Shows/hides the brush size slider</li>
                                     <li><code>enableUndoRedoInput</code> – Shows/hides undo/redo buttons</li>
                                     <li><code>backgroundInputs</code> – Shows/hides background color and image controls</li>

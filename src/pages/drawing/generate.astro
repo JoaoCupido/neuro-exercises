@@ -58,6 +58,14 @@ import ImportUrl from '../../components/ImportUrl.astro';
                     <div class="">
                         <h3 class="text-lg font-semibold text-foreground mb-4">Input Controls</h3>
 
+                        <!-- Bucket Input -->
+                        <div class="mb-4">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" id="bucketInputCheck" checked class="text-primary" />
+                                <span class="text-foreground font-medium">Show Bucket Tool</span>
+                            </label>
+                        </div>
+
                         <!-- Eraser Input -->
                         <div class="mb-4">
                             <label class="flex items-center gap-2">
@@ -110,6 +118,21 @@ import ImportUrl from '../../components/ImportUrl.astro';
                                 <input type="checkbox" id="hideToolbarCheck" class="text-primary" />
                                 <span class="text-foreground font-medium">Hide Toolbar (minimal interface)</span>
                             </label>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2" for="toolbarSizeSelect">
+                                Toolbar Size
+                            </label>
+                            <select
+                                    id="toolbarSizeSelect"
+                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                                <option value="default">Default</option>
+                                <option value="small">Small</option>
+                                <option value="medium">Medium</option>
+                                <option value="large">Large</option>
+                            </select>
                         </div>
 
                         <!-- Toolbar Position (only show if not hiding toolbar) -->

@@ -2,13 +2,19 @@
 import Layout from '../layouts/Layout.astro';
 import { Pencil, FileText, Zap, Link, Waypoints } from '@lucide/astro';
 import { exercisesList } from '../data/Exercises';
+import packageJson from '../../package.json';
 ---
 
 <Layout title="Neuro Exercises - Main Menu">
     <main class="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
         <div class="min-h-screen mx-auto max-w-4xl">
             <div class="text-center mb-12">
-                <h1 class="text-4xl font-bold text-foreground mb-4">Neuro Exercises</h1>
+                <div class="flex items-center justify-center gap-4 mb-4">
+                    <h1 class="text-4xl font-bold text-foreground">Neuro Exercises</h1>
+                    <span class="px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full">
+                        v{packageJson.version}
+                    </span>
+                </div>
                 <p class="text-muted-foreground text-lg">Select an exercise to begin</p>
             </div>
 

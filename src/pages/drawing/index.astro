@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { Skull, Pencil, Eraser, Undo2, Redo2, Trash2, Image, Grid, Settings } from '@lucide/astro';
+import { Skull, Pencil, Eraser, Undo2, Redo2, Trash2, Image, Grid, Settings, PaintBucket } from '@lucide/astro';
 ---
 
 <Layout title="Drawing - Neuro Exercises" hideNavbar={true}>
@@ -10,7 +10,7 @@ import { Skull, Pencil, Eraser, Undo2, Redo2, Trash2, Image, Grid, Settings } fr
             <div id="toolbar" class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-card border border-border rounded-lg shadow-lg max-w-[95vw] z-50">
                 <!-- Tab Navigation -->
                 <div id="tabNavigation" class="flex flex-wrap border-b border-border">
-                    <button id="generalTab" class="px-4 py-2 font-medium text-primary border-b-2 border-primary transition-colors flex items-center gap-2">
+                    <button id="generalTab" class="px-4 py-2 font-medium text-primary border-b-2 border-primary transition-colors flex items-center gap-2 rounded-none">
                         <Settings class="w-4 h-4" />
                     </button>
                     <button id="backgroundTab" class="px-4 py-2 font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
@@ -24,25 +24,30 @@ import { Skull, Pencil, Eraser, Undo2, Redo2, Trash2, Image, Grid, Settings } fr
                 <!-- Tab Content -->
                 <div id="tabContent" class="px-4">
                     <!-- General Inputs Tab -->
-                    <div id="generalContent" class="tab-content flex flex-wrap items-center gap-4">
+                    <div id="generalContent" class="tab-content flex flex-nowrap items-center gap-4">
                         <div id="toolDiv" class="flex items-center gap-2">
                             <!-- Pencil Tool -->
                             <button id="pencilBtn" class="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
                                 <Pencil class="w-4 h-4" />
                             </button>
 
+                            <!-- Bucket Tool -->
+                            <button id="bucketBtn" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity hidden flex items-center gap-2">
+                                <PaintBucket class="w-4 h-4" />
+                            </button>
+
                             <!-- Eraser Tool -->
-                            <button id="eraserBtn" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-accent transition-colors hidden flex items-center gap-2">
+                            <button id="eraserBtn" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity hidden flex items-center gap-2">
                                 <Eraser class="w-4 h-4" />
                             </button>
                         </div>
 
                         <!-- Undo/Redo Buttons -->
-                        <div id="undoRedoControls" class="flex gap-0 hidden">
-                            <button id="undoBtn" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 rounded-r-none" disabled>
+                        <div id="undoRedoControls" class="flex gap-1 hidden">
+                            <button id="undoBtn" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center" disabled>
                                 <Undo2 class="w-4 h-4" />
                             </button>
-                            <button id="redoBtn" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 rounded-l-none" disabled>
+                            <button id="redoBtn" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center" disabled>
                                 <Redo2 class="w-4 h-4" />
                             </button>
                         </div>
@@ -51,11 +56,11 @@ import { Skull, Pencil, Eraser, Undo2, Redo2, Trash2, Image, Grid, Settings } fr
                         <div id="sizeControl" class="flex items-center gap-2">
                             <label for="sizeSlider" class="text-sm text-muted-foreground">Size:</label>
                             <input type="range" id="sizeSlider" min="1" max="50" value="5" class="w-32" />
-                            <span id="sizeValue" class="text-sm text-foreground ">5</span>
+                            <span id="sizeValue" class="text-sm text-foreground">5</span>
                         </div>
 
                         <!-- Color Picker -->
-                        <div id="colorPicker" class="flex items-center gap-2">
+                        <div id="colorPicker" class="flex items-center w-full h-full">
                             <div id="colorButtons" class="grid gap-2"></div>
                         </div>
 
