@@ -573,6 +573,8 @@ class DrawingCanvasManager {
     updateUndoRedoButtons() {
         this.undoBtn.disabled = this.undoStack.length === 0;
         this.redoBtn.disabled = this.redoStack.length === 0;
+
+        this.screenshotDrawing();
     }
 
     setupSliders() {
@@ -827,6 +829,8 @@ class DrawingCanvasManager {
         this.bgColorCtx.clearRect(0, 0, this.bgColorCanvas.width, this.bgColorCanvas.height);
         this.bgColorCtx.fillStyle = rgbaColor;
         this.bgColorCtx.fillRect(0, 0, this.bgColorCanvas.width, this.bgColorCanvas.height);
+
+        this.screenshotDrawing();
     }
 
     loadBackgroundImage() {
