@@ -1049,8 +1049,8 @@ class DrawingCanvasManager {
     }
 
     screenshotDrawing() {
-        const targetWidth = this.drawingCanvas.width / 4;
-        const targetHeight = this.drawingCanvas.height / 4;
+        const targetWidth = this.drawingCanvas.width / 2;
+        const targetHeight = this.drawingCanvas.height / 2;
 
         // Create canvas at target size
         const tempCanvas = document.createElement('canvas');
@@ -1090,7 +1090,8 @@ class DrawingCanvasManager {
                     original_width: this.drawingCanvas.width,
                     original_height: this.drawingCanvas.height,
                     compressed_width: targetWidth,
-                    compressed_height: targetHeight
+                    compressed_height: targetHeight,
+                    onlyShowLast: true,
                 }
             };
             window.vuplex.postMessage(JSON.stringify(sendData));
