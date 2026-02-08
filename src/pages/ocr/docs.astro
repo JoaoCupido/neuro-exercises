@@ -1,0 +1,226 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ParameterDoc from '../../components/ParameterDoc.astro';
+import BackgroundDocs from '../../components/BackgroundDocs.astro';
+import GridDocs from '../../components/GridDocs.astro';
+---
+
+<Layout title="OCR Drawing Documentation - Neuro Exercises">
+    <main class="min-h-screen bg-background">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border py-12 px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-4xl">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-3 h-3 rounded-full bg-primary"></div>
+                    <span class="text-sm font-medium text-primary">API Documentation</span>
+                </div>
+                <h1 class="text-4xl font-bold text-foreground mb-3">OCR Drawing Configuration</h1>
+                <p class="text-muted-foreground text-lg max-w-2xl">
+                    Convert handwriting/drawing to text with OCR capabilities. Configure drawing tools,
+                    recognition settings, and validation options.
+                </p>
+
+                <!-- Quick Navigation -->
+                <div class="flex flex-wrap gap-2 mt-6">
+                    <a href="#ocr-parameters" class="text-sm bg-background hover:bg-secondary border border-border px-3 py-1.5 rounded-full transition-colors">
+                        OCR Parameters
+                    </a>
+                    <a href="#drawing-tools" class="text-sm bg-background hover:bg-secondary border border-border px-3 py-1.5 rounded-full transition-colors">
+                        Drawing Tools
+                    </a>
+                    <a href="#appearance" class="text-sm bg-background hover:bg-secondary border border-border px-3 py-1.5 rounded-full transition-colors">
+                        Appearance
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="py-12 px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-4xl">
+                <div class="prose prose-lg max-w-none mb-12">
+                    <p class="text-muted-foreground">
+                        The OCR Drawing exercise allows users to draw or write on a canvas and converts
+                        their handwriting/drawing to text using OCR (Optical Character Recognition).
+                        It includes validation against correct answers and customizable interface options.
+                    </p>
+                </div>
+
+                <div class="space-y-10">
+                    <!-- OCR Parameters -->
+                    <section id="ocr-parameters">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-2 h-8 bg-primary rounded-full"></div>
+                            <h2 class="text-2xl font-bold text-foreground">OCR Parameters</h2>
+                        </div>
+                        <p class="text-muted-foreground mb-6">Parameters specific to OCR recognition and validation.</p>
+
+                        <div class="space-y-6">
+                            <ParameterDoc
+                                    name="pencilColor"
+                                    description="Color of the drawing pencil/brush."
+                                    type="Hex color"
+                                    defaultValue="#000000"
+                                    examples={["/?pencilColor=#ff0000"]}
+                                    codeExample="?pencilColor=#000000"
+                            />
+
+                            <ParameterDoc
+                                    name="pencilSize"
+                                    description="Size of the drawing pencil/brush in pixels."
+                                    type="Number (1-50)"
+                                    defaultValue="5"
+                                    examples={["/?pencilSize=10"]}
+                                    codeExample="?pencilSize=8"
+                            />
+
+                            <ParameterDoc
+                                    name="correctAnswersList"
+                                    description="List of correct answers to validate against. Can be JSON array or comma-separated."
+                                    type="Array or comma-separated strings"
+                                    defaultValue="[]"
+                                    examples={['/?correctAnswersList=["hello","world"]', "/?correctAnswersList=hello,world"]}
+                                    codeExample='?correctAnswersList=["apple","banana","cherry"]'
+                            />
+
+                            <ParameterDoc
+                                    name="ocrLanguage"
+                                    description="Language for OCR recognition (Tesseract language code)."
+                                    type="String"
+                                    defaultValue="eng"
+                                    examples={["/?ocrLanguage=eng", "/?ocrLanguage=spa"]}
+                                    codeExample="?ocrLanguage=eng"
+                            />
+
+                            <ParameterDoc
+                                    name="confidenceThreshold"
+                                    description="Minimum confidence score for OCR results (0.0 to 1.0)."
+                                    type="Number"
+                                    defaultValue="0.5"
+                                    examples={["/?confidenceThreshold=0.7"]}
+                                    codeExample="?confidenceThreshold=0.6"
+                            />
+                        </div>
+                    </section>
+
+                    <!-- Drawing Tools -->
+                    <section id="drawing-tools">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-2 h-8 bg-primary rounded-full"></div>
+                            <h2 class="text-2xl font-bold text-foreground">Drawing Tools</h2>
+                        </div>
+                        <p class="text-muted-foreground mb-6">Parameters for configuring the drawing interface.</p>
+
+                        <div class="space-y-6">
+                            <ParameterDoc
+                                    name="clearButtonPosition"
+                                    description="Position of the clear button. Format: [top|middle|bottom]-[left|center|right]"
+                                    type="String"
+                                    defaultValue="top-right"
+                                    examples={["/?clearButtonPosition=top-left", "/?clearButtonPosition=middle-center"]}
+                                    codeExample="?clearButtonPosition=bottom-right"
+                            />
+
+                            <ParameterDoc
+                                    name="hideResultsPopup"
+                                    description="When true, hides the results popup after OCR recognition."
+                                    type="Boolean (true/false)"
+                                    defaultValue="false"
+                                    examples={["/?hideResultsPopup=true"]}
+                                    codeExample="?hideResultsPopup=true"
+                            />
+
+                            <ParameterDoc
+                                    name="hidePopupButtons"
+                                    description="When true, hides buttons in the results popup."
+                                    type="Boolean (true/false)"
+                                    defaultValue="false"
+                                    examples={["/?hidePopupButtons=true"]}
+                                    codeExample="?hidePopupButtons=true"
+                            />
+                        </div>
+                    </section>
+
+                    <!-- Appearance -->
+                    <section id="appearance">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-2 h-8 bg-primary rounded-full"></div>
+                            <h2 class="text-2xl font-bold text-foreground">Appearance</h2>
+                        </div>
+                        <p class="text-muted-foreground mb-6">
+                            Parameters for canvas appearance, including background and grid.
+                        </p>
+
+                        <!-- Background Controls -->
+                        <BackgroundDocs />
+
+                        <!-- Grid Controls -->
+                        <GridDocs />
+
+                        <!-- Shared Toolbar Settings -->
+                        <div class="mt-8">
+                            <h3 class="text-xl font-bold text-foreground mb-4">Toolbar Settings</h3>
+                            <div class="space-y-6">
+                                <ParameterDoc
+                                        name="toolbarPosition"
+                                        description="Position of the toolbar. Options: up, down, left, right."
+                                        type="String"
+                                        defaultValue="up"
+                                        examples={["/?toolbarPosition=left"]}
+                                        codeExample="?toolbarPosition=right"
+                                />
+
+                                <ParameterDoc
+                                        name="toolbarSize"
+                                        description="Size of toolbar components. Options: small, medium, large."
+                                        type="String"
+                                        defaultValue="medium"
+                                        examples={["/?toolbarSize=large"]}
+                                        codeExample="?toolbarSize=small"
+                                />
+
+                                <ParameterDoc
+                                        name="hideToolbar"
+                                        description="When true, hides the entire toolbar for a minimal interface."
+                                        type="Boolean (true/false)"
+                                        defaultValue="false"
+                                        examples={["/?hideToolbar=true"]}
+                                        codeExample="?hideToolbar=true"
+                                />
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Complete Example -->
+                    <section>
+                        <div class="bg-primary/10 border border-primary rounded-lg p-6">
+                            <h2 class="text-2xl font-bold text-foreground mb-3">Complete Example</h2>
+                            <p class="text-muted-foreground mb-4">A full OCR drawing configuration example:</p>
+
+                            <div class="bg-secondary rounded-lg p-4 overflow-x-auto">
+                                <code class="text-sm text-foreground whitespace-nowrap">
+                                    {"/?pencilColor=%23000000&pencilSize=8&correctAnswersList=[\"hello\",\"world\"]&clearButtonPosition=top-right&bgColor=%23f0f0f0&gridEnabled=true&gridColor=%23cccccc&gridOpacity=20&toolbarPosition=right&ocrLanguage=eng&confidenceThreshold=0.6"}
+                                </code>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</Layout>
