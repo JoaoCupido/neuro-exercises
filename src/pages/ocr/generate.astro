@@ -6,11 +6,11 @@ import GridInputs from '../../components/GridInputs.astro';
 import ImportUrl from '../../components/ImportUrl.astro';
 ---
 
-<Layout title="Generate OCR Drawing URL - Neuro Exercises">
+<Layout title="Generate OCR URL - Neuro Exercises">
     <main class="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
         <div class="min-h-screen mx-auto max-w-4xl">
-            <h1 class="text-4xl font-bold text-foreground mb-2">Generate OCR Drawing URL</h1>
-            <p class="text-muted-foreground mb-8">Configure your OCR drawing canvas and generate a shareable URL</p>
+            <h1 class="text-4xl font-bold text-foreground mb-2">Generate OCR URL</h1>
+            <p class="text-muted-foreground mb-8">Configure your OCR canvas and generate a shareable URL</p>
 
             <div class="bg-card border border-border rounded-lg p-6 mb-8">
                 <form id="urlForm" class="space-y-6">
@@ -39,14 +39,15 @@ import ImportUrl from '../../components/ImportUrl.astro';
                         />
 
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-foreground mb-2" for="correctAnswersInput">
-                                Correct Answers (comma-separated or JSON)
+                            <label class="block text-sm font-medium text-foreground mb-2" for="correctAnswerInput">
+                                Correct Answer (optional)
                             </label>
-                            <textarea
-                                    id="correctAnswersInput"
-                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[80px]"
-                                    placeholder='["hello", "world"] or hello,world'
-                            ></textarea>
+                            <input
+                                    id="correctAnswerInput"
+                                    type="text"
+                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                    placeholder="Enter correct answer"
+                            >
                         </div>
 
                         <div class="mb-4">
@@ -70,16 +71,19 @@ import ImportUrl from '../../components/ImportUrl.astro';
                             </select>
                         </div>
 
-                        <FormInput
-                                id="confidenceThresholdInput"
-                                label="Confidence Threshold (0.0-1.0)"
-                                type="number"
-                                value="0.5"
-                                step="0.1"
-                                min="0"
-                                max="1"
-                                className="mb-4"
-                        />
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2" for="detectionModeSelect">
+                                Detection Mode
+                            </label>
+                            <select
+                                    id="detectionModeSelect"
+                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                                <option value="both">Both Letters and Numbers</option>
+                                <option value="letters">Letters Only</option>
+                                <option value="numbers">Numbers Only</option>
+                            </select>
+                        </div>
                     </div>
 
                     <hr class="my-4 h-0.5 bg-border" />
@@ -120,43 +124,6 @@ import ImportUrl from '../../components/ImportUrl.astro';
                                 <input type="checkbox" id="hidePopupButtonsCheck" class="text-primary" />
                                 <span class="text-foreground font-medium">Hide Popup Buttons</span>
                             </label>
-
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" id="hideToolbarCheck" class="text-primary" />
-                                <span class="text-foreground font-medium">Hide Toolbar</span>
-                            </label>
-                        </div>
-
-                        <!-- Toolbar Settings (only show if not hiding toolbar) -->
-                        <div id="toolbarSettings" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-foreground mb-2" for="toolbarPositionSelect">
-                                    Toolbar Position
-                                </label>
-                                <select
-                                        id="toolbarPositionSelect"
-                                        class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                                >
-                                    <option value="up">Top</option>
-                                    <option value="down">Bottom</option>
-                                    <option value="left">Left</option>
-                                    <option value="right">Right</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-foreground mb-2" for="toolbarSizeSelect">
-                                    Toolbar Size
-                                </label>
-                                <select
-                                        id="toolbarSizeSelect"
-                                        class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                                >
-                                    <option value="small">Small</option>
-                                    <option value="medium" selected>Medium</option>
-                                    <option value="large">Large</option>
-                                </select>
-                            </div>
                         </div>
                     </div>
 
@@ -173,7 +140,7 @@ import ImportUrl from '../../components/ImportUrl.astro';
             </div>
 
             <!-- Import URL Section -->
-            <ImportUrl exercise="OCR Drawing" />
+            <ImportUrl exercise="OCR" />
 
             <!-- Generated URL -->
             <div id="resultSection" class="bg-card border border-border rounded-lg p-6">
@@ -194,7 +161,7 @@ import ImportUrl from '../../components/ImportUrl.astro';
                             id="openBtn"
                             class="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-accent transition-colors"
                     >
-                        Open OCR Drawing
+                        Open OCR
                     </button>
                 </div>
             </div>
@@ -222,13 +189,6 @@ import ImportUrl from '../../components/ImportUrl.astro';
 
         const openBtn = document.getElementById('openBtn');
         const generatedUrlEl = document.getElementById('generatedUrl');
-        const hideToolbarCheck = document.getElementById('hideToolbarCheck');
-        const toolbarSettings = document.getElementById('toolbarSettings');
-
-        // Show/hide toolbar settings based on checkbox
-        hideToolbarCheck.addEventListener('change', function() {
-            toolbarSettings.style.display = this.checked ? 'none' : 'block';
-        });
 
         openBtn.addEventListener("click", (e) => {
             e.preventDefault();
@@ -237,11 +197,11 @@ import ImportUrl from '../../components/ImportUrl.astro';
             if (!url) return;
 
             if (windowTauri && currentPlatform !== "android" && currentPlatform !== "ios") {
-                const label = `ocr-drawing-${Date.now()}`;
+                const label = `ocr-${Date.now()}`;
                 const win = new WebviewWindow(label, { url });
 
                 win.once("tauri://created", () => {
-                    console.log("OCR Drawing window created");
+                    console.log("OCR window created");
                 });
                 win.once("tauri://error", (e) => {
                     console.error("Window creation error:", e);

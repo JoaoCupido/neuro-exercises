@@ -1,160 +1,52 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { Pencil, Trash2, CheckCircle, XCircle, Settings, RotateCcw, Scan, Image, Grid, Eraser } from '@lucide/astro';
+import {
+    Pencil,
+    Trash2,
+    CheckCircle,
+    XCircle,
+    Settings,
+    RotateCcw,
+    Scan,
+    Image,
+    Grid,
+    Eraser,
+    Redo2, Undo2
+} from '@lucide/astro';
 ---
 
-<Layout title="OCR Drawing - Neuro Exercises" hideNavbar={true}>
+<Layout title="OCR - Neuro Exercises" hideNavbar={true}>
     <main class="min-h-screen relative">
-        <!-- Floating Toolbar -->
-        <div id="toolbar" class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-card border border-border rounded-lg shadow-lg max-w-[95vw] z-50">
-            <!-- Tab Navigation -->
-            <div id="tabNavigation" class="flex flex-wrap border-b border-border">
-                <button id="generalTab" class="px-4 py-2 font-medium text-primary border-b-2 border-primary transition-colors flex items-center gap-2 rounded-none">
-                    <Settings class="w-4 h-4" />
-                </button>
-                <button id="backgroundTab" class="px-4 py-2 font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
-                    <Image class="w-4 h-4" />
-                </button>
-                <button id="gridTab" class="px-4 py-2 font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
-                    <Grid class="w-4 h-4" />
-                </button>
-            </div>
-
-            <!-- Tab Content -->
-            <div id="tabContent" class="px-4">
-                <!-- General Inputs Tab -->
-                <div id="generalContent" class="tab-content flex flex-nowrap items-center gap-4">
-                    <div id="toolDiv" class="flex items-center gap-2">
-                        <!-- Pencil Tool -->
-                        <button id="pencilBtn" class="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
-                            <Pencil class="w-4 h-4" />
-                        </button>
-
-                        <!-- Eraser Tool -->
-                        <button id="eraserBtn" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity hidden flex items-center gap-2">
-                            <Eraser class="w-4 h-4" />
-                        </button>
-                    </div>
-
-                    <!-- Size Control -->
-                    <div id="sizeControl" class="flex items-center gap-2">
-                        <label for="sizeSlider" class="text-sm text-muted-foreground">Size:</label>
-                        <input type="range" id="sizeSlider" min="1" max="50" value="5" class="w-32" />
-                        <span id="sizeValue" class="text-sm text-foreground">5</span>
-                    </div>
-
-                    <!-- Color Picker -->
-                    <div id="colorPicker" class="flex items-center w-full h-full">
-                        <div id="colorButtons" class="grid gap-2"></div>
-                    </div>
-
-                    <!-- OCR Scan Button -->
-                    <button id="scanBtn" class="ml-auto px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
-                        <Scan class="w-4 h-4" />
-                        Recognize Text
-                    </button>
-                </div>
-
-                <!-- Background Inputs Tab -->
-                <div id="backgroundContent" class="tab-content hidden flex flex-wrap items-center gap-4">
-                    <!-- Background Color -->
-                    <div id="bgColorControl" class="flex items-center gap-2 hidden">
-                        <label for="bgColorPicker" class="text-sm text-muted-foreground">BG Color:</label>
-                        <input type="color" id="bgColorPicker" value="#ffffff" class=" h-8 rounded border border-border" />
-                    </div>
-
-                    <!-- Background Opacity -->
-                    <div id="opacityControl" class="flex items-center gap-2 hidden">
-                        <label for="opacitySlider" class="text-sm text-muted-foreground">BG Image Opacity:</label>
-                        <input type="range" id="opacitySlider" min="0" max="100" value="50" class="w-32" />
-                        <span id="opacityValue" class="text-sm text-foreground ">50%</span>
-                    </div>
-
-                    <!-- Background Image Size -->
-                    <div id="bgSizeControl" class="flex items-center gap-2 hidden">
-                        <label for="bgSizeSlider" class="text-sm text-muted-foreground">BG Image Size:</label>
-                        <input type="range" id="bgSizeSlider" min="10" max="200" value="100" class="w-32" />
-                        <span id="bgSizeValue" class="text-sm text-foreground ">100%</span>
-                    </div>
-
-                    <!-- Background Position X -->
-                    <div id="bgPosXControl" class="flex items-center gap-2 hidden">
-                        <label for="bgPosXSlider" class="text-sm text-muted-foreground">BG Pos X:</label>
-                        <input type="range" id="bgPosXSlider" min="0" max="100" value="50" class="w-32" />
-                        <span id="bgPosXValue" class="text-sm text-foreground ">50%</span>
-                    </div>
-
-                    <!-- Background Position Y -->
-                    <div id="bgPosYControl" class="flex items-center gap-2 hidden">
-                        <label for="bgPosYSlider" class="text-sm text-muted-foreground">BG Pos Y:</label>
-                        <input type="range" id="bgPosYSlider" min="0" max="100" value="50" class="w-32" />
-                        <span id="bgPosYValue" class="text-sm text-foreground ">50%</span>
-                    </div>
-                </div>
-
-                <!-- Grid Inputs Tab -->
-                <div id="gridContent" class="tab-content hidden flex flex-wrap items-center gap-4">
-                    <!-- Grid Toggle -->
-                    <div id="gridToggleDiv" class="hidden flex items-center gap-2">
-                        <label for="gridToggle" class="text-sm text-muted-foreground">Grid:</label>
-                        <input type="checkbox" id="gridToggle" class="w-4 h-4 text-primary rounded" />
-                    </div>
-
-                    <!-- Grid Size -->
-                    <div id="gridSizeDiv" class="hidden flex items-center gap-2">
-                        <label for="gridSize" class="text-sm text-muted-foreground">Cell Size:</label>
-                        <input type="range" id="gridSize" min="10" max="100" value="20" class="w-24" />
-                        <span id="gridSizeValue" class="text-sm text-foreground ">20</span>
-                    </div>
-
-                    <!-- Grid Color -->
-                    <div id="gridColorDiv" class="hidden flex items-center gap-2">
-                        <label for="gridColor" class="text-sm text-muted-foreground">Color:</label>
-                        <input type="color" id="gridColor" value="#cccccc" class=" h-8 rounded border border-border" />
-                    </div>
-
-                    <!-- Grid Opacity -->
-                    <div id="gridOpacityDiv" class="hidden flex items-center gap-2">
-                        <label for="gridOpacity" class="text-sm text-muted-foreground">Opacity:</label>
-                        <input type="range" id="gridOpacity" min="0" max="100" value="30" class="w-24" />
-                        <span id="gridOpacityValue" class="text-sm text-foreground ">30%</span>
-                    </div>
-
-                    <!-- Grid Style -->
-                    <div id="gridStyleDiv" class="hidden flex items-center gap-2">
-                        <label for="gridStyle" class="text-sm text-muted-foreground">Style:</label>
-                        <select id="gridStyle" class="px-2 py-1 bg-secondary border border-border rounded text-sm">
-                            <option value="solid">Solid</option>
-                            <option value="dotted">Dotted</option>
-                            <option value="dashed">Dashed</option>
-                            <option value="sparse">Sparse</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+        <!-- Undo/Redo Buttons -->
+        <div id="undoRedoContainer" class="absolute left-4 top-4 flex gap-2 z-50">
+            <button id="undoBtn" class="bg-secondary text-secondary-foreground p-4.5 rounded-lg hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+                <Undo2 class="w-5 h-5" />
+            </button>
+            <button id="redoBtn" class="bg-secondary text-secondary-foreground p-4.5 rounded-lg hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+                <Redo2 class="w-5 h-5" />
+            </button>
         </div>
 
-        <!-- Clear Button (Positioned based on URL parameter) -->
-        <button id="clearBtn" class="absolute bg-secondary text-secondary-foreground px-4 py-2 rounded-lg font-medium hover:bg-accent transition-colors flex items-center gap-2 z-40">
-            <Trash2 class="w-4 h-4" />
+        <!-- Clear Button (Positioned based on URL parameter) - Increased size -->
+        <button id="clearBtn" class="absolute bg-destructive/10 text-destructive-foreground px-6 py-4 rounded-lg font-medium hover:bg-accent transition-colors flex items-center gap-3 z-50">
+            <Trash2 class="w-5 h-5" />
             Clear
         </button>
+
+        <!-- OCR Live Result Display (Bottom Center) - Increased size -->
+        <div id="ocrLiveResult" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-8 py-4 rounded-xl text-lg font-semibold opacity-0 transition-opacity duration-300 pointer-events-none z-50 max-w-[95%] text-center hidden">
+            <span id="ocrLiveText"></span>
+        </div>
 
         <!-- Results Popup -->
         <div id="popup" class="fixed inset-0 flex items-center justify-center bg-black/70 z-50 hidden">
             <div class="bg-card border border-border rounded-lg p-8 max-w-md mx-4 text-center">
-                <h3 class="text-2xl font-bold text-foreground mb-4">Recognition Results</h3>
+                <h3 class="text-2xl font-bold text-foreground mb-4">✓ Correct!</h3>
 
                 <!-- Recognized Text -->
                 <div class="bg-secondary rounded-lg p-4 mb-6 text-left">
-                    <h4 class="font-semibold text-foreground mb-2">Recognized Text:</h4>
+                    <h4 class="font-semibold text-foreground mb-2">You wrote:</h4>
                     <p id="recognizedText" class="text-foreground text-lg break-words"></p>
-                </div>
-
-                <!-- Correct Answers Check -->
-                <div id="correctAnswersSection" class="mb-6 hidden">
-                    <h4 class="font-semibold text-foreground mb-2">Correct Answers Check:</h4>
-                    <div id="correctAnswersList" class="space-y-2"></div>
                 </div>
 
                 <!-- Buttons -->
@@ -163,9 +55,12 @@ import { Pencil, Trash2, CheckCircle, XCircle, Settings, RotateCcw, Scan, Image,
                         <RotateCcw class="w-4 h-4" />
                         Try Again
                     </button>
-                    <button id="closePopupBtn" class="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-medium hover:bg-accent transition-colors">
-                        Close
-                    </button>
+                    <a
+                            href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "/")}
+                            class="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-medium hover:bg-accent transition-colors text-center"
+                    >
+                        Back to Menu
+                    </a>
                 </div>
             </div>
         </div>

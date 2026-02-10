@@ -1,18 +1,10 @@
 const form = document.getElementById('urlForm');
 const generatedUrlEl = document.getElementById('generatedUrl');
 const copyBtn = document.getElementById('copyBtn');
-const hideToolbarCheck = document.getElementById('hideToolbarCheck');
-const toolbarSettings = document.getElementById('toolbarSettings');
 
 // Import functionality
 document.getElementById('importBtn').addEventListener('click', importFromURL);
 document.getElementById('importParamBtn').addEventListener('click', importFromParams);
-
-// Toggle toolbar settings visibility
-hideToolbarCheck.addEventListener('change', (e) => {
-    toolbarSettings.style.display = e.target.checked ? 'none' : 'block';
-    generateURL();
-});
 
 // Add event listeners to all form inputs
 form.addEventListener('input', generateURL);
@@ -35,17 +27,13 @@ function getFormData() {
     return {
         pencilColor: document.getElementById('pencilColorInput').value,
         pencilSize: document.getElementById('pencilSizeInput').value,
-        correctAnswers: document.getElementById('correctAnswersInput').value.trim(),
+        correctAnswer: document.getElementById('correctAnswerInput').value.trim(),
+        detectionMode: document.getElementById('detectionModeSelect').value,
         ocrLanguage: document.getElementById('ocrLanguageSelect').value,
-        confidenceThreshold: document.getElementById('confidenceThresholdInput').value,
 
         clearButtonPosition: document.getElementById('clearButtonPositionSelect').value,
         hideResultsPopup: document.getElementById('hideResultsPopupCheck').checked,
         hidePopupButtons: document.getElementById('hidePopupButtonsCheck').checked,
-        hideToolbar: document.getElementById('hideToolbarCheck').checked,
-
-        toolbarPosition: document.getElementById('toolbarPositionSelect').value,
-        toolbarSize: document.getElementById('toolbarSizeSelect').value,
 
         bgColor: document.getElementById('bgColorInput').value,
         bgImage: document.getElementById('bgImageInput').value,
@@ -75,24 +63,16 @@ function buildURLParams(data) {
         params.append('pencilSize', data.pencilSize);
     }
 
-    if (data.correctAnswers) {
-        try {
-            // Try to parse as JSON, otherwise treat as comma-separated
-            JSON.parse(data.correctAnswers);
-            params.append('correctAnswersList', data.correctAnswers);
-        } catch {
-            // Convert comma-separated to array format
-            const answers = data.correctAnswers.split(',').map(a => `"${a.trim()}"`);
-            params.append('correctAnswersList', `[${answers.join(',')}]`);
-        }
+    if (data.correctAnswer) { // Changed from correctAnswers
+        params.append('correctAnswer', data.correctAnswer.trim());
+    }
+
+    if (data.detectionMode && data.detectionMode !== 'both') {
+        params.append('detectionMode', data.detectionMode);
     }
 
     if (data.ocrLanguage && data.ocrLanguage !== 'eng') {
         params.append('ocrLanguage', data.ocrLanguage);
-    }
-
-    if (data.confidenceThreshold && data.confidenceThreshold !== '0.5') {
-        params.append('confidenceThreshold', data.confidenceThreshold);
     }
 
     // Interface Parameters
@@ -106,21 +86,6 @@ function buildURLParams(data) {
 
     if (data.hidePopupButtons) {
         params.append('hidePopupButtons', 'true');
-    }
-
-    if (data.hideToolbar) {
-        params.append('hideToolbar', 'true');
-    }
-
-    // Toolbar settings (only include if not hiding toolbar)
-    if (!data.hideToolbar) {
-        if (data.toolbarPosition && data.toolbarPosition !== 'up') {
-            params.append('toolbarPosition', data.toolbarPosition);
-        }
-
-        if (data.toolbarSize && data.toolbarSize !== 'medium') {
-            params.append('toolbarSize', data.toolbarSize);
-        }
     }
 
     // Background parameters
@@ -229,14 +194,6 @@ function importFromParams() {
 }
 
 function applyParameters(params) {
-    const decodeValue = (value) => {
-        try {
-            return decodeURIComponent(value);
-        } catch {
-            return value;
-        }
-    };
-
     // Helper functions
     const setInput = (id, paramValue) => {
         const input = document.getElementById(id);
@@ -259,12 +216,6 @@ function applyParameters(params) {
         }
     };
 
-    // OCR Parameters
-    const pencilColor = params.get('pencilColor');
-    if (pencilColor) {
-        setInput('pencilColorInput', decodeValue(pencilColor));
-    }
-
     setInput('pencilSizeInput', params.get('pencilSize'));
 
     const correctAnswers = params.get('correctAnswersList');
@@ -272,28 +223,29 @@ function applyParameters(params) {
         setInput('correctAnswersInput', correctAnswers);
     }
 
+    const decodeValue = (value) => {
+        try {
+            return decodeURIComponent(value);
+        } catch {
+            return value;
+        }
+    };
+
+    // OCR Parameters
+    const pencilColor = params.get('pencilColor');
+    if (pencilColor) {
+        setInput('pencilColorInput', decodeValue(pencilColor));
+    }
+
+    setInput('pencilSizeInput', params.get('pencilSize'));
+    setInput('correctAnswerInput', params.get('correctAnswer')); // Changed
+    setSelect('detectionModeSelect', params.get('detectionMode') || 'both'); // New
     setSelect('ocrLanguageSelect', params.get('ocrLanguage'));
-    setInput('confidenceThresholdInput', params.get('confidenceThreshold'));
 
     // Interface Parameters
     setSelect('clearButtonPositionSelect', params.get('clearButtonPosition'));
     setCheckbox('hideResultsPopupCheck', params.get('hideResultsPopup'));
     setCheckbox('hidePopupButtonsCheck', params.get('hidePopupButtons'));
-
-    const hideToolbar = params.get('hideToolbar');
-    if (hideToolbar === 'true') {
-        setCheckbox('hideToolbarCheck', true);
-        toolbarSettings.style.display = 'none';
-    }
-
-    // Toolbar settings
-    if (hideToolbar !== 'true') {
-        setSelect('toolbarPositionSelect', params.get('toolbarPosition'));
-        const toolbarSize = params.get('toolbarSize');
-        if (toolbarSize) {
-            setSelect('toolbarSizeSelect', toolbarSize);
-        }
-    }
 
     // Background parameters
     const bgColor = params.get('bgColor');
