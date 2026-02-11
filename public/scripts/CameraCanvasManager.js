@@ -321,6 +321,7 @@ class CameraCanvasManager {
 
         // Update the display
         this.updatePredictionDisplay();
+        this.vuplexDataLogging();
     }
 
     updatePredictionDisplay() {
@@ -371,6 +372,21 @@ class CameraCanvasManager {
             requestAnimationFrame(renderLoop);
         };
         renderLoop();
+    }
+
+    vuplexDataLogging() {
+        if (window.vuplex) {
+            const sendData = {
+                type: "NeuroExercises",
+                activity: "Camera",
+                dataNE: {
+                    detectedObjects: JSON.stringify(this.displayPredictions),
+                }
+            };
+            window.vuplex.postMessage(JSON.stringify(sendData));
+        } else {
+            console.log("VUPLEX bridge not available");
+        }
     }
 }
 
