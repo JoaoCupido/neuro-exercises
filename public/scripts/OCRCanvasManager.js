@@ -30,6 +30,7 @@ class OCRCanvasManager {
     }
 
     init() {
+        this.startTime = null;
         this.setupCanvases();
         this.setupDrawingState();
         this.setupUI();
@@ -38,6 +39,8 @@ class OCRCanvasManager {
         this.drawBackgroundColor();
         this.loadBackgroundImage();
         this.drawGrid();
+
+        this.startTimer();
     }
 
     setupCanvases() {
@@ -213,10 +216,14 @@ class OCRCanvasManager {
     setupPopup() {
         this.popup = document.getElementById('popup');
         this.tryAgainBtn = document.getElementById('tryAgainBtn');
+        this.popupTimerElement = document.getElementById('popupTimer');
 
         this.tryAgainBtn.onclick = () => {
             this.clearCanvas();
             this.hidePopup();
+            this.startTimer();
+            this.setupDrawingState();
+            this.updateUndoRedoButtons();
         };
 
         if (this.ocrSettings.hidePopupButtons) {
@@ -311,6 +318,7 @@ class OCRCanvasManager {
 
         // Only show popup for exact match
         if (cleanRecognized === cleanCorrectAnswer) {
+            this.stopTimer();
             this.showResultsPopup(recognizedText);
         }
     }
@@ -318,6 +326,9 @@ class OCRCanvasManager {
     showResultsPopup(recognizedText) {
         // Hide live display first
         this.hideLiveOCRDisplay();
+
+        this.popupTimerElement.textContent = `Time: ${this.popupTimer.toFixed(2)}s`;
+        this.popupTimerElement.classList.remove('hidden');
 
         // Update popup content - show only recognized text
         const recognizedTextElement = document.getElementById('recognizedText');
@@ -335,6 +346,60 @@ class OCRCanvasManager {
         if (!this.ocrSettings.hideResultsPopup) {
             this.popup.classList.remove('hidden');
         }
+
+        if (window.vuplex) {
+            const sendData = {
+                type: "NeuroExercises",
+                activity: "OCR",
+                dataNE: {
+                    correctText: this.ocrSettings.correctAnswer,
+                    detectedText: recognizedText,
+                    //image: this.screenshotDrawing(),
+                    time: parseFloat(this.popupTimer.toFixed(2)),
+                }
+            };
+            window.vuplex.postMessage(JSON.stringify(sendData));
+        } else {
+            console.log("VUPLEX bridge not available");
+        }
+    }
+
+    updateTimer() {
+        const currentTime = new Date();
+        const timeInSeconds = (currentTime - this.startTime) / 1000;
+        this.popupTimer = timeInSeconds;
+    }
+
+    startTimer() {
+        this.startTime = new Date();
+        this.timerInterval = setInterval(() => this.updateTimer(), 100);
+    }
+
+    stopTimer() {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+        }
+    }
+
+    screenshotDrawing() {
+        const targetWidth = this.drawingCanvas.width / 2;
+        const targetHeight = this.drawingCanvas.height / 2;
+
+        // Create canvas at target size
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = targetWidth;
+        tempCanvas.height = targetHeight;
+        const tempCtx = tempCanvas.getContext('2d');
+
+        // User drawing (top layer)
+        tempCtx.drawImage(this.drawingCanvas, 0, 0, this.drawingCanvas.width, this.drawingCanvas.height,
+            0, 0, targetWidth, targetHeight);
+
+        // Convert to JPEG with lower quality for smaller size
+        const base64Image = tempCanvas.toDataURL('image/jpeg');
+        const base64WithoutPrefix = base64Image.replace(/^data:image\/jpeg;base64,/, '');
+
+        return base64WithoutPrefix;
     }
 
     // Update the hidePopup method to clear timer:
