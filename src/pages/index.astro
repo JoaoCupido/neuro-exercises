@@ -20,46 +20,46 @@ import packageJson from '../../package.json';
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                 {exercisesList.map((ex) => (
-                        <div class="bg-card border border-border rounded-lg overflow-hidden flex flex-col h-full" id={ex.id}>
+                    <div class="bg-card border border-border rounded-lg overflow-hidden flex flex-col h-full" id={ex.id}>
+                        <a
+                                href={ex.path}
+                                class="block p-6 hover:bg-accent/50 transition-colors group flex-1"
+                        >
+                            <div class="text-center h-full flex flex-col">
+                                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform flex-shrink-0">
+                                    <ex.icon class="w-8 h-8 text-primary" />
+                                </div>
+                                <h3 class="text-xl font-semibold text-foreground mb-2 flex-shrink-0">
+                                    {ex.title}
+                                </h3>
+                                <div class="text-muted-foreground flex-1 flex items-center justify-center">
+                                    <p>{ex.description}</p>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Subcards - pinned to bottom -->
+                        <div class="border-t border-border grid grid-cols-2 divide-x divide-border mt-auto">
                             <a
-                                    href={ex.path}
-                                    class="block p-6 hover:bg-accent/50 transition-colors group flex-1"
+                                    href={ex.path + `/docs`}
+                                    class="p-4 text-center hover:bg-accent/30 transition-colors group/sub"
                             >
-                                <div class="text-center h-full flex flex-col">
-                                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform flex-shrink-0">
-                                        <ex.icon class="w-8 h-8 text-primary" />
-                                    </div>
-                                    <h3 class="text-xl font-semibold text-foreground mb-2 flex-shrink-0">
-                                        {ex.title}
-                                    </h3>
-                                    <div class="text-muted-foreground flex-1 flex items-center justify-center">
-                                        <p>{ex.description}</p>
-                                    </div>
+                                <div class="flex items-center justify-center gap-2 text-sm text-muted-foreground group-hover/sub:text-foreground">
+                                    <FileText class="w-4 h-4" />
+                                    Documentation
                                 </div>
                             </a>
-
-                            <!-- Subcards - pinned to bottom -->
-                            <div class="border-t border-border grid grid-cols-2 divide-x divide-border mt-auto">
-                                <a
-                                        href={ex.path + `/docs`}
-                                        class="p-4 text-center hover:bg-accent/30 transition-colors group/sub"
-                                >
-                                    <div class="flex items-center justify-center gap-2 text-sm text-muted-foreground group-hover/sub:text-foreground">
-                                        <FileText class="w-4 h-4" />
-                                        Documentation
-                                    </div>
-                                </a>
-                                <a
-                                        href={ex.path + `/generate`}
-                                        class="p-4 text-center hover:bg-accent/30 transition-colors group/sub"
-                                >
-                                    <div class="flex items-center justify-center gap-2 text-sm text-muted-foreground group-hover/sub:text-foreground">
-                                        <Link class="w-4 h-4" />
-                                        Generate URL
-                                    </div>
-                                </a>
-                            </div>
+                            <a
+                                    href={ex.path + `/generate`}
+                                    class="p-4 text-center hover:bg-accent/30 transition-colors group/sub"
+                            >
+                                <div class="flex items-center justify-center gap-2 text-sm text-muted-foreground group-hover/sub:text-foreground">
+                                    <Link class="w-4 h-4" />
+                                    Generate URL
+                                </div>
+                            </a>
                         </div>
+                    </div>
                 ))}
             </div>
         </div>

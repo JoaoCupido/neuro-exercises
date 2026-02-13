@@ -1,84 +1,108 @@
 ---
 // components/Navbar.astro
-import { Pencil, FileText, Zap, Link, Waypoints, Brain, ChevronDown, Menu, X, Home } from '@lucide/astro';
+import { Brain, ChevronDown, Menu, X, Home, Globe, ExternalLink } from '@lucide/astro';
 import { exercisesList } from '../data/Exercises';
+
+const basePath = process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "";
+
+// Define navigation sections to reduce duplication
+const navSections = [
+    { title: "Run", pathSuffix: "" },
+    { title: "API Docs", pathSuffix: "/docs" },
+    { title: "Generate URL", pathSuffix: "/generate" }
+] as const;
 ---
 
 <nav class="border-b border-border bg-card">
     <div class="mx-auto max-w-full px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 items-center justify-between md:justify-start w-full gap-8">
-            <!-- Logo -->
-            <div class="flex items-center gap-8">
-                <a href={`${process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : ""}/`} class="text-xl font-bold text-primary flex items-center gap-2">
+        <div class="flex h-16 items-center w-full">
+            <div class="flex flex-row items-center w-full">
+                <a href={`${basePath}/`} class="text-xl font-bold text-primary flex items-center gap-2 shrink-0">
                     <Brain class="w-6 h-6" />
                     Neuro Exercises
                 </a>
-            </div>
 
-            <!-- Navigation Menu -->
-            <div class="hidden md:flex items-center gap-6">
-                {exercisesList.map((ex) => (
-                    <div class="relative group" id={ex.id}>
-                        <button class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent">
-                            {ex.title}
-                            <ChevronDown class="w-4 h-4 transition-transform group-hover:rotate-180" />
-                        </button>
-                        <div class="absolute top-full left-0 mt-1 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                            <div class="py-2">
-                                <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot} class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors">
-                                    <ex.icon class="w-4 h-4" />
-                                    Execute Exercise
-                                </a>
-                                <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot + `/docs`} class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors">
-                                    <FileText class="w-4 h-4" />
-                                    API Documentation
-                                </a>
-                                <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot + `/generate`} class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors">
-                                    <Link class="w-4 h-4" />
-                                    Generate URL
-                                </a>
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-4 ml-8">
+                    {navSections.map((section) => (
+                            <div class="relative group" data-key={section.title}>
+                                <button class="flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent">
+                                    {section.title}
+                                    <ChevronDown class="w-4 h-4 transition-transform group-hover:rotate-180" />
+                                </button>
+                                <div class="absolute top-full left-0 mt-1 w-56 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                    <div class="py-2">
+                                        {exercisesList.map((ex) => (
+                                                <a
+                                                        href={`${basePath}${ex.pathWithoutDot}${section.pathSuffix}`}
+                                                        class="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors"
+                                                >
+                                                    <ex.icon class="w-4 h-4" />
+                                                    {ex.title}
+                                                </a>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
 
-            <!-- Mobile menu button -->
-            <div class="md:hidden">
-                <button id="mobileMenuButton" class="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
-                    <Menu id="menuIcon" class="w-5 h-5" />
-                    <X id="closeIcon" class="w-5 h-5 hidden" />
-                </button>
+                <div id="tauriWebInterface" class="hidden md:flex items-center ml-auto">
+                    <a
+                            id="tauriWebLink"
+                            href="#"
+                            rel="noopener noreferrer"
+                            class="hidden flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent border border-border"
+                    >
+                        <ExternalLink class="w-4 h-4" />
+                        <span>Web Interface</span>
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="flex md:hidden ml-auto">
+                    <button id="mobileMenuButton" class="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
+                        <Menu id="menuIcon" class="w-5 h-5" />
+                        <X id="closeIcon" class="w-5 h-5 hidden" />
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- Mobile Menu -->
         <div id="mobileMenu" class="md:hidden hidden border-t border-border py-4">
-            <div class="space-y-2">
-                {exercisesList.map((ex) => (
-                    <div class="space-y-1" id={ex.id}>
-                        <div class="px-3 py-2 text-sm font-semibold text-foreground">
-                            {ex.title}
+            <div class="space-y-1">
+                {navSections.map((section) => (
+                        <div class="space-y-1" data-key={section.title}>
+                            <div class="px-3 py-2 text-sm font-semibold text-foreground bg-accent/50 rounded-md">
+                                {section.title}
+                            </div>
+                            {exercisesList.map((ex) => (
+                                    <a
+                                            href={`${basePath}${ex.pathWithoutDot}${section.pathSuffix}`}
+                                            class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors ml-2"
+                                    >
+                                        <ex.icon class="w-4 h-4" />
+                                        {ex.title}
+                                    </a>
+                            ))}
                         </div>
-                        <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
-                            <ex.icon class="w-4 h-4" />
-                            Execute Exercise
-                        </a>
-                        <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot + `/docs`} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
-                            <FileText class="w-4 h-4" />
-                            API Documentation
-                        </a>
-                        <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "") + ex.pathWithoutDot + `/generate`} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
-                            <Link class="w-4 h-4" />
-                            Generate URL
-                        </a>
-                    </div>
                 ))}
 
                 <hr class="h-0.5 border-t-0 bg-border" />
 
-                <!-- Home Link -->
-                <a href={`${process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : ""}/`} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
+                <a
+                        id="tauriMobileLink"
+                        href="#"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="hidden flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+                >
+                    <ExternalLink class="w-4 h-4" />
+                    <span>Web Interface</span>
+                </a>
+
+                <a href={`${basePath}/`} class="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
                     <Home class="w-4 h-4" />
                     Home
                 </a>
@@ -88,7 +112,7 @@ import { exercisesList } from '../data/Exercises';
 </nav>
 
 <script is:inline>
-    // Mobile menu functionality
+    // Mobile menu functionality - keep this is:inline
     document.addEventListener('DOMContentLoaded', () => {
         const mobileMenuButton = document.getElementById('mobileMenuButton');
         const mobileMenu = document.getElementById('mobileMenu');
@@ -96,43 +120,86 @@ import { exercisesList } from '../data/Exercises';
         const closeIcon = document.getElementById('closeIcon');
 
         if (mobileMenuButton && mobileMenu && menuIcon && closeIcon) {
-            mobileMenuButton.addEventListener('click', () => {
+            const toggleMenu = () => {
                 const isHidden = mobileMenu.classList.contains('hidden');
-                if (isHidden) {
-                    mobileMenu.classList.remove('hidden');
-                    menuIcon.classList.add('hidden');
-                    closeIcon.classList.remove('hidden');
-                } else {
-                    mobileMenu.classList.add('hidden');
-                    menuIcon.classList.remove('hidden');
-                    closeIcon.classList.add('hidden');
-                }
+                mobileMenu.classList.toggle('hidden');
+                menuIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+            };
+
+            mobileMenuButton.addEventListener('click', toggleMenu);
+
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', toggleMenu);
             });
         }
-
-        // Close mobile menu when clicking on a link
-        const mobileLinks = mobileMenu?.querySelectorAll('a');
-        mobileLinks?.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                menuIcon.classList.remove('hidden');
-                closeIcon.classList.add('hidden');
-            });
-        });
     });
 </script>
 
+<script>
+    import { isRunningInTauri } from "../utils/IsTauri";
+    import { getTauriPort } from "../utils/TauriPort";
+    import { openUrl } from '@tauri-apps/plugin-opener';
+
+    // Run this immediately when script loads, not waiting for DOMContentLoaded
+    (async function initTauriInterface() {
+        try {
+            const isInTauri = await isRunningInTauri();
+
+            // if (true) {
+            if (isInTauri) {
+                const webLink = document.getElementById("tauriWebLink");
+                const mobileLink = document.getElementById("tauriMobileLink");
+                const webInterface = document.getElementById("tauriWebInterface");
+                const mobileInterface = document.getElementById("tauriMobileInterface");
+
+                if (webLink) {
+                    webLink.classList.remove("hidden");
+                }
+
+                if (mobileLink) {
+                    mobileLink.classList.remove("hidden");
+                    if (mobileInterface) mobileInterface.classList.remove("hidden");
+                }
+
+                const port = await getTauriPort();
+                const url = `http://localhost:${port}`;
+
+                const openExternal = async (e) => {
+                    e.preventDefault();
+                    try {
+                        await openUrl(url);
+                    } catch (error) {
+                        console.error('Failed to open URL:', error);
+                        // Fallback: open in new window/tab
+                        window.open(url, '_blank');
+                    }
+                };
+
+                if (webLink) {
+                    webLink.addEventListener("click", openExternal);
+                    // Ensure href is set correctly
+                    webLink.setAttribute('href', url);
+                }
+
+                if (mobileLink) {
+                    mobileLink.addEventListener("click", openExternal);
+                    mobileLink.setAttribute('href', url);
+                }
+            }
+        } catch (error) {
+            console.error('Tauri interface initialization failed:', error);
+        }
+    })();
+</script>
+
 <style is:inline>
-    /* Smooth transitions for dropdown */
     .group:hover .group-hover\:visible {
         visibility: visible;
     }
-
     .group:hover .group-hover\:opacity-100 {
         opacity: 1;
     }
-
-    /* Ensure dropdown appears above other content */
     .relative > div {
         z-index: 50;
     }

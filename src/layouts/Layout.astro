@@ -17,18 +17,10 @@ import "../styles/globals.css";
 <slot />
 <script>
     import { Menu, MenuItem, Submenu } from '@tauri-apps/api/menu';
-
-    async function safeIsTauri() {
-        try {
-            const { isTauri } = await import('@tauri-apps/api/core');
-            return isTauri();
-        } catch {
-            return false; // Browser
-        }
-    }
+    import { isRunningInTauri } from "../utils/IsTauri.js";
 
     async function setupMenu() {
-        const windowTauri = await safeIsTauri();
+        const windowTauri = await isRunningInTauri();
         if (!windowTauri) return; // Prevents running in normal browser
 
         let currentPlatform = "web";
@@ -70,10 +62,7 @@ import "../styles/globals.css";
         await menu.setAsAppMenu();
     }
 
-    // Initialize when DOM is loaded
-    document.addEventListener('DOMContentLoaded', () => {
-        setupMenu();
-    });
+    setupMenu();
 </script>
 </body>
 </html>

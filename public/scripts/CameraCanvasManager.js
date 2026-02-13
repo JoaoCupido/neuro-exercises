@@ -1,3 +1,5 @@
+import {isRunningInTauri} from "../../src/utils/IsTauri.js";
+
 // CameraCanvasManager.js - Updated class
 class CameraCanvasManager {
     constructor() {
@@ -258,15 +260,7 @@ class CameraCanvasManager {
             console.log("Object detection model loaded.");
         } else if (this.gamemode === 'detectFaceEmotion') {
             console.log("Loading Face API models...");
-            async function safeIsTauri() {
-                try {
-                    const { isTauri } = await import('@tauri-apps/api/core');
-                    return isTauri();
-                } catch {
-                    return false; // Browser
-                }
-            }
-            const windowTauri = await safeIsTauri();
+            const windowTauri = await isRunningInTauri();
             const isGithubPages = window.location.hostname.includes('github.io');
 
             const MODEL_URL = windowTauri ?
