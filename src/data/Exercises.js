@@ -1,4 +1,4 @@
-import { Pencil, Waypoints, Zap, FileText, Camera, Text } from "@lucide/astro";
+import { Pencil, Waypoints, Zap, FileText, Camera, Text, WholeWord } from "@lucide/astro";
 
 /*
 export interface Exercise {
@@ -40,12 +40,12 @@ export const exercisesList = [
     },
 
     {
-        id: "ocr",
-        title: "OCR",
-        description: "Convert handwriting to text with OCR",
-        icon: Text,
-        path: "./ocr",
-        pathWithoutDot: "/ocr"
+        id: "text-recognition",
+        title: "Text Recognition",
+        description: "Handwriting recognition for numbers, letters, and words",
+        icon: WholeWord,
+        path: "./text-recognition",
+        pathWithoutDot: "/text-recognition"
     },
 
     // Add more exercises later:

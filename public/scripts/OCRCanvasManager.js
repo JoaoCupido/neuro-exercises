@@ -17,11 +17,29 @@ class OCRCanvasManager {
     }
 
     loadOCRSettings() {
+        const correctAnswersParam = this.urlParams.get('correctAnswers');
+        let correctAnswersList = [];
+
+        if (correctAnswersParam) {
+            try {
+                // Try to parse as JSON array
+                const parsed = JSON.parse(correctAnswersParam);
+                if (Array.isArray(parsed)) {
+                    correctAnswersList = parsed;
+                }
+            } catch {
+                // If not JSON, treat as comma-separated string
+                correctAnswersList = correctAnswersParam.split(',').map(s => s.trim());
+            }
+        }
+
         return {
             pencilColor: this.urlParams.get('pencilColor') || '#000000',
             pencilSize: parseInt(this.urlParams.get('pencilSize') || '5'),
-            correctAnswer: this.urlParams.get('correctAnswer') || '',
-            clearButtonPosition: this.urlParams.get('clearButtonPosition') || 'top-right',
+            correctAnswers: correctAnswersList,
+            clearButtonPosition: this.urlParams.get('clearButtonPosition') || 'bottom-center',
+            undoRedoPosition: this.urlParams.get('undoRedoPosition') || 'bottom-center',
+            hideOCRLive: this.urlParams.get('hideOCRLive') === 'true',
             hideResultsPopup: this.urlParams.get('hideResultsPopup') === 'true',
             hidePopupButtons: this.urlParams.get('hidePopupButtons') === 'true',
             ocrLanguage: this.urlParams.get('ocrLanguage') || 'eng',
@@ -35,7 +53,10 @@ class OCRCanvasManager {
         this.setupDrawingState();
         this.setupUI();
         this.setupEventListeners();
+
         this.setupClearButtonPosition();
+        this.setupUndoRedoPosition();
+
         this.drawBackgroundColor();
         this.loadBackgroundImage();
         this.drawGrid();
@@ -175,7 +196,10 @@ class OCRCanvasManager {
         // Remove all position classes
         clearBtn.classList.remove(
             'top-4', 'top-1/2', 'bottom-4',
-            'left-4', 'left-1/2', 'right-4'
+            'left-4', 'left-1/2', 'right-4',
+            'translate-x-[calc(-50%_-_70px)]', 'translate-x-[calc(50%_+_70px)]',
+            'translate-x-[-140px]', 'translate-x-[140px]', 'translate-x-[70px]', 'transform',
+            'left-1/2', '-translate-x-1/2' // Remove centering classes
         );
 
         // Parse position string (e.g., "top-right", "middle-center", "bottom-left")
@@ -194,18 +218,135 @@ class OCRCanvasManager {
                 break;
         }
 
-        // Apply horizontal positioning
-        switch(horizontal) {
-            case 'left':
-                clearBtn.classList.add('left-4');
+        // Check if clear button is in the same position as undo/redo
+        const undoRedoPosition = this.ocrSettings.undoRedoPosition;
+
+        if (position === undoRedoPosition) {
+            // When buttons are together, we need to center the entire group
+            // The group width is approximately: undo/redo container (w-20) + gap (w-4) + clear button (w-24)
+            // Let's calculate offsets to center the combined group
+
+            switch(horizontal) {
+                case 'left':
+                    // For left alignment, keep buttons left-aligned with offset
+                    clearBtn.classList.add('left-4', 'translate-x-[140px]');
+                    break;
+                case 'center':
+                    // For center alignment, we need to center the entire button group
+                    // Undo/Redo container will be positioned at 50% - half group width
+                    // Clear button will be at 50% + half group width - button width
+                    // But since we're positioning the clear button here, we need a different approach
+
+                    // Remove any existing positioning from the container first
+                    const undoRedoContainer = document.getElementById('undoRedoContainer');
+                    undoRedoContainer.classList.remove('left-1/2', '-translate-x-1/2');
+
+                    // Position both buttons to center the group
+                    // Approximate widths: undo/redo container ~96px, clear button ~112px, gap ~16px
+                    // Total group width ~224px, half = 112px
+
+                    // Position undo/redo at left edge of centered group
+                    undoRedoContainer.classList.add('absolute');
+                    undoRedoContainer.style.left = '50%';
+                    undoRedoContainer.style.transform = 'translateX(-112px)'; // Move left by half group width
+
+                    // Position clear button at right edge of centered group
+                    clearBtn.classList.add('absolute');
+                    clearBtn.style.left = '50%';
+                    clearBtn.style.transform = 'translateX(16px)'; // Start from center and add gap
+                    break;
+
+                case 'right':
+                    // For right alignment, keep buttons right-aligned with offset
+                    clearBtn.classList.add('right-4');
+                    // Undo/Redo container already has translate-x-[-140px] from its own setup
+                    break;
+            }
+        } else {
+            // Normal horizontal positioning without offset
+            switch(horizontal) {
+                case 'left':
+                    clearBtn.classList.add('left-4');
+                    break;
+                case 'center':
+                    clearBtn.classList.add('left-1/2', 'transform', '-translate-x-1/2');
+                    break;
+                case 'right':
+                    clearBtn.classList.add('right-4');
+                    break;
+            }
+        }
+    }
+
+    setupUndoRedoPosition() {
+        const container = document.getElementById('undoRedoContainer');
+        const position = this.ocrSettings.undoRedoPosition;
+
+        // Remove all position classes and inline styles
+        container.classList.remove(
+            'top-4', 'top-1/2', 'bottom-4',
+            'left-4', 'left-1/2', 'right-4',
+            'translate-x-[-140px]', 'translate-x-[140px]', 'transform'
+        );
+
+        // Remove any inline styles
+        container.style.left = '';
+        container.style.transform = '';
+
+        // Parse position string (e.g., "top-right", "middle-center", "bottom-left")
+        const [vertical, horizontal] = position.split('-');
+
+        // Apply vertical positioning
+        switch(vertical) {
+            case 'top':
+                container.classList.add('top-4');
                 break;
-            case 'center':
-                clearBtn.classList.add('left-1/2', 'transform', '-translate-x-1/2');
+            case 'middle':
+                container.classList.add('top-1/2', 'transform', '-translate-y-1/2');
                 break;
-            case 'right':
-                clearBtn.classList.add('right-4');
+            case 'bottom':
+                container.classList.add('bottom-4');
                 break;
         }
+
+        // Check if clear button is in the same position
+        const clearPosition = this.ocrSettings.clearButtonPosition;
+
+        if (position === clearPosition) {
+            switch(horizontal) {
+                case 'left':
+                    // On left side, Undo/Redo at edge, Clear to the right
+                    container.classList.add('left-4');
+                    break;
+                case 'center':
+                    // For center, we'll handle positioning in setupClearButtonPosition
+                    // Just add a base class and let the other method handle transforms
+                    container.classList.add('absolute');
+                    // Don't add centering classes here - they'll be set in setupClearButtonPosition
+                    break;
+                case 'right':
+                    // On right side, we want [Undo/Redo] [Clear] with Clear at the edge
+                    // So Undo/Redo should be offset to the left
+                    container.classList.add('right-4', 'translate-x-[-140px]');
+                    break;
+            }
+        } else {
+            // Normal horizontal positioning without offset
+            switch(horizontal) {
+                case 'left':
+                    container.classList.add('left-4');
+                    break;
+                case 'center':
+                    container.classList.add('left-1/2', 'transform', '-translate-x-1/2');
+                    break;
+                case 'right':
+                    container.classList.add('right-4');
+                    break;
+            }
+        }
+
+        // Trigger clear button repositioning
+        this.setupClearButtonPosition();
     }
 
     setupClearButton() {
@@ -277,7 +418,7 @@ class OCRCanvasManager {
 
     // Add new methods for live OCR display
     scheduleOCRUpdate() {
-        if (!this.isOCRLiveEnabled) return;
+        if (!this.isOCRLiveEnabled || this.ocrSettings.hideOCRLive) return;
 
         // Clear any existing timer
         if (this.ocrUpdateTimer) {
@@ -311,13 +452,17 @@ class OCRCanvasManager {
     }
 
     checkForCorrectAnswer(recognizedText) {
-        if (!this.ocrSettings.correctAnswer || !recognizedText) return;
+        if (!this.ocrSettings.correctAnswers || this.ocrSettings.correctAnswers.length === 0 || !recognizedText) return;
 
         const cleanRecognized = recognizedText.trim().toLowerCase();
-        const cleanCorrectAnswer = this.ocrSettings.correctAnswer.trim().toLowerCase();
 
-        // Only show popup for exact match
-        if (cleanRecognized === cleanCorrectAnswer) {
+        // Check if any correct answer matches (case-insensitive)
+        const isCorrect = this.ocrSettings.correctAnswers.some(answer =>
+            answer.trim().toLowerCase() === cleanRecognized
+        );
+
+        // Only show popup for exact match with any correct answer
+        if (isCorrect) {
             this.stopTimer();
             this.showResultsPopup(recognizedText);
         }
@@ -438,7 +583,7 @@ class OCRCanvasManager {
     }
 
     updateLiveOCRDisplay(recognizedText) {
-        if (!this.isOCRLiveEnabled) return;
+        if (!this.isOCRLiveEnabled || this.ocrSettings.hideOCRLive) return;
 
         // Filter text based on detection mode
         //const filteredText = this.filterTextByDetectionMode(recognizedText || '');
@@ -722,7 +867,14 @@ class OCRCanvasManager {
         this.ocrLiveText = document.getElementById('ocrLiveText');
         this.previousOCRText = '';
         this.ocrUpdateTimer = null;
-        this.isOCRLiveEnabled = this.urlParams.get('enableLiveOCR') !== 'false'; // Default to true
+
+        // Disable live OCR if hideOCRLive is true
+        this.isOCRLiveEnabled = !this.ocrSettings.hideOCRLive && this.urlParams.get('enableLiveOCR') !== 'false';
+
+        // If live OCR is hidden, hide the element immediately
+        if (this.ocrSettings.hideOCRLive && this.ocrLiveResult) {
+            this.ocrLiveResult.classList.add('hidden');
+        }
     }
 
     prepareCanvasForOCR() {
@@ -766,14 +918,14 @@ class OCRCanvasManager {
             switch (this.ocrSettings.detectionMode) {
                 case 'letters':
                     // Letters only - whitelist letters and spaces
-                    params.tessedit_char_whitelist = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ ';
+                    params.tessedit_char_whitelist = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ';
                     break;
                 case 'numbers':
                     // Numbers only - whitelist digits
-                    params.tessedit_char_whitelist = '0123456789 ';
+                    params.tessedit_char_whitelist = '0123456789';
                     break;
                 default:
-                    params.tessedit_char_whitelist = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ0123456789 ';
+                    params.tessedit_char_whitelist = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ0123456789';
                     break;
                 // 'both' case - no whitelist, detect everything
             }

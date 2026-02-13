@@ -1,0 +1,82 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import {
+    Pencil,
+    Trash2,
+    CheckCircle,
+    XCircle,
+    Settings,
+    RotateCcw,
+    Scan,
+    Image,
+    Grid,
+    Eraser,
+    Redo2, Undo2
+} from '@lucide/astro';
+---
+
+<Layout title="OCR - Neuro Exercises" hideNavbar={true}>
+    <main class="min-h-screen relative">
+        <!-- Undo/Redo Buttons - Remove fixed classes, they'll be added by JS -->
+        <div id="undoRedoContainer" class="absolute flex gap-2 z-50">
+            <button id="undoBtn" class="bg-secondary text-secondary-foreground p-4.5 rounded-lg hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+                <Undo2 class="w-5 h-5" />
+            </button>
+            <button id="redoBtn" class="bg-secondary text-secondary-foreground p-4.5 rounded-lg hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+                <Redo2 class="w-5 h-5" />
+            </button>
+        </div>
+
+        <!-- Clear Button - Remove fixed classes, they'll be added by JS -->
+        <button id="clearBtn" class="absolute bg-destructive/10 text-destructive-foreground px-6 py-4 rounded-lg font-medium hover:bg-destructive/20 transition-colors flex items-center gap-3 z-50">
+            <Trash2 class="w-5 h-5" />
+            Clear
+        </button>
+
+        <!-- OCR Live Result Display (Bottom Center) - Increased size -->
+        <div id="ocrLiveResult" class="absolute bottom-24 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-8 py-4 rounded-xl text-2xl font-semibold opacity-0 transition-opacity duration-300 pointer-events-none z-50 max-w-[95%] text-center hidden">
+            <span id="ocrLiveText"></span>
+        </div>
+
+        <!-- Results Popup -->
+        <div id="popup" class="fixed inset-0 flex items-center justify-center bg-black/70 z-50 hidden">
+            <div class="bg-card border border-border rounded-lg p-8 max-w-md mx-4 text-center">
+                <h3 class="text-2xl font-bold text-foreground mb-4">✓ Correct!</h3>
+
+                <!-- Recognized Text -->
+                <div class="bg-secondary rounded-lg p-4 mb-6 text-left">
+                    <h4 class="font-semibold text-foreground mb-2">You wrote:</h4>
+                    <p id="recognizedText" class="text-foreground text-lg break-words"></p>
+                </div>
+
+                <div class="space-y-3 mb-6">
+                    <p id="popupTimer" class="text-foreground">Time: 0 seconds</p>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3" id="buttonContainer">
+                    <button id="tryAgainBtn" class="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+                        <RotateCcw class="w-4 h-4" />
+                        Try Again
+                    </button>
+                    <a
+                            href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "/")}
+                            class="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-medium hover:bg-accent transition-colors text-center"
+                    >
+                        Back to Menu
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Container - Full Screen -->
+        <div class="absolute inset-0">
+            <canvas id="bgColorCanvas" class="absolute inset-0"></canvas>
+            <canvas id="bgImageCanvas" class="absolute inset-0"></canvas>
+            <canvas id="gridCanvas" class="absolute inset-0 pointer-events-none"></canvas>
+            <canvas id="drawingCanvas" class="absolute inset-0"></canvas>
+        </div>
+    </main>
+
+    <script type="module" is:inline src="/scripts/OCRCanvasManager.js"></script>
+</Layout>

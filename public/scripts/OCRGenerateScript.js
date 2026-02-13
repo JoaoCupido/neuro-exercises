@@ -27,11 +27,13 @@ function getFormData() {
     return {
         pencilColor: document.getElementById('pencilColorInput').value,
         pencilSize: document.getElementById('pencilSizeInput').value,
-        correctAnswer: document.getElementById('correctAnswerInput').value.trim(),
+        correctAnswers: document.getElementById('correctAnswersInput').value.trim(),
         detectionMode: document.getElementById('detectionModeSelect').value,
         ocrLanguage: document.getElementById('ocrLanguageSelect').value,
 
         clearButtonPosition: document.getElementById('clearButtonPositionSelect').value,
+        undoRedoPosition: document.getElementById('undoRedoPositionSelect').value,
+        hideOCRLive: document.getElementById('hideOCRLiveCheck').checked,
         hideResultsPopup: document.getElementById('hideResultsPopupCheck').checked,
         hidePopupButtons: document.getElementById('hidePopupButtonsCheck').checked,
 
@@ -63,8 +65,12 @@ function buildURLParams(data) {
         params.append('pencilSize', data.pencilSize);
     }
 
-    if (data.correctAnswer) { // Changed from correctAnswers
-        params.append('correctAnswer', data.correctAnswer.trim());
+    if (data.correctAnswers) {
+        // Split by comma and trim each answer, then encode as JSON array
+        const answersList = data.correctAnswers.split(',').map(answer => answer.trim()).filter(answer => answer !== '');
+        if (answersList.length > 0) {
+            params.append('correctAnswers', JSON.stringify(answersList));
+        }
     }
 
     if (data.detectionMode && data.detectionMode !== 'both') {
@@ -76,8 +82,16 @@ function buildURLParams(data) {
     }
 
     // Interface Parameters
-    if (data.clearButtonPosition && data.clearButtonPosition !== 'top-right') {
+    if (data.clearButtonPosition && data.clearButtonPosition !== 'bottom-center') { // Changed default
         params.append('clearButtonPosition', data.clearButtonPosition);
+    }
+
+    if (data.undoRedoPosition && data.undoRedoPosition !== 'bottom-center') {
+        params.append('undoRedoPosition', data.undoRedoPosition);
+    }
+
+    if (data.hideOCRLive) {
+        params.append('hideOCRLive', 'true');
     }
 
     if (data.hideResultsPopup) {
@@ -218,9 +232,18 @@ function applyParameters(params) {
 
     setInput('pencilSizeInput', params.get('pencilSize'));
 
-    const correctAnswers = params.get('correctAnswersList');
+    const correctAnswers = params.get('correctAnswers');
     if (correctAnswers) {
-        setInput('correctAnswersInput', correctAnswers);
+        try {
+            // Try to parse as JSON array first
+            const answersList = JSON.parse(correctAnswers);
+            if (Array.isArray(answersList)) {
+                setInput('correctAnswersInput', answersList.join(', '));
+            }
+        } catch {
+            // If not JSON, treat as comma-separated string
+            setInput('correctAnswersInput', correctAnswers);
+        }
     }
 
     const decodeValue = (value) => {
@@ -238,12 +261,13 @@ function applyParameters(params) {
     }
 
     setInput('pencilSizeInput', params.get('pencilSize'));
-    setInput('correctAnswerInput', params.get('correctAnswer')); // Changed
     setSelect('detectionModeSelect', params.get('detectionMode') || 'both'); // New
     setSelect('ocrLanguageSelect', params.get('ocrLanguage'));
 
     // Interface Parameters
-    setSelect('clearButtonPositionSelect', params.get('clearButtonPosition'));
+    setSelect('clearButtonPositionSelect', params.get('clearButtonPosition') || 'bottom-center');
+    setSelect('undoRedoPositionSelect', params.get('undoRedoPosition') || 'bottom-center');
+    setCheckbox('hideOCRLiveCheck', params.get('hideOCRLive')); // New
     setCheckbox('hideResultsPopupCheck', params.get('hideResultsPopup'));
     setCheckbox('hidePopupButtonsCheck', params.get('hidePopupButtons'));
 
