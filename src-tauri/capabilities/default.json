@@ -5,7 +5,9 @@
   "windows": [
     "main",
     "tmt-*",
-    "drawing-*"
+    "drawing-*",
+    "camera-*",
+    "textRecognition-*"
   ],
   "permissions": [
     "core:default",

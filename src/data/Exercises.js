@@ -42,6 +42,7 @@ export const exercisesList = [
     {
         id: "text-recognition",
         title: "Text Recognition",
+        //description: "DEBUG",
         description: "Handwriting recognition for numbers, letters, and words",
         icon: WholeWord,
         path: "./text-recognition",
@@ -52,6 +53,7 @@ export const exercisesList = [
     // {
     //   id: "stroop",
     //   title: "Stroop Test",
+    //   description: "DEBUG",
     //   icon: Zap,
     //   path: "/stroop"
     // }

@@ -39,6 +39,7 @@ pub fn run() {
     let (port, _listener) = reserve_port(desired_port);
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_localhost::Builder::new(port).build())

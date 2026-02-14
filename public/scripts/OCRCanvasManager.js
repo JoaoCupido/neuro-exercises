@@ -418,8 +418,6 @@ class OCRCanvasManager {
 
     // Add new methods for live OCR display
     scheduleOCRUpdate() {
-        if (!this.isOCRLiveEnabled || this.ocrSettings.hideOCRLive) return;
-
         // Clear any existing timer
         if (this.ocrUpdateTimer) {
             clearTimeout(this.ocrUpdateTimer);
@@ -492,15 +490,30 @@ class OCRCanvasManager {
             this.popup.classList.remove('hidden');
         }
 
+        this.sendVuplexData(recognizedText, true);
+    }
+
+    sendVuplexData(recognizedText, isFinished) {
         if (window.vuplex) {
+            let dataLog = [];
+            if (isFinished) {
+                dataLog.push({
+                    state: "FINISHED",
+                    item: "-",
+                    positionInTime: this.popupTimer
+                });
+            }
+
             const sendData = {
                 type: "NeuroExercises",
-                activity: "OCR",
+                activity: "TextRecognition",
                 dataNE: {
-                    correctText: this.ocrSettings.correctAnswer,
+                    log: dataLog,
+                    correctText: this.ocrSettings.correctAnswers.join(", "),
                     detectedText: recognizedText,
                     //image: this.screenshotDrawing(),
                     time: parseFloat(this.popupTimer.toFixed(2)),
+                    //onlyShowLast: true,
                 }
             };
             window.vuplex.postMessage(JSON.stringify(sendData));
@@ -583,12 +596,11 @@ class OCRCanvasManager {
     }
 
     updateLiveOCRDisplay(recognizedText) {
-        if (!this.isOCRLiveEnabled || this.ocrSettings.hideOCRLive) return;
-
         // Filter text based on detection mode
         //const filteredText = this.filterTextByDetectionMode(recognizedText || '');
         //const cleanText = filteredText.trim();
         const cleanText = recognizedText;
+        this.sendVuplexData(recognizedText, false);
 
         if (cleanText === this.previousOCRText) {
             return;
@@ -598,7 +610,7 @@ class OCRCanvasManager {
         this.previousOCRText = cleanText;
 
         // Update display text
-        if (cleanText) {
+        if (cleanText && !this.ocrSettings.hideOCRLive) {
             this.ocrLiveText.textContent = cleanText.length > 50 ?
                 cleanText.substring(0, 47) + '...' : cleanText;
 
@@ -867,9 +879,6 @@ class OCRCanvasManager {
         this.ocrLiveText = document.getElementById('ocrLiveText');
         this.previousOCRText = '';
         this.ocrUpdateTimer = null;
-
-        // Disable live OCR if hideOCRLive is true
-        this.isOCRLiveEnabled = !this.ocrSettings.hideOCRLive && this.urlParams.get('enableLiveOCR') !== 'false';
 
         // If live OCR is hidden, hide the element immediately
         if (this.ocrSettings.hideOCRLive && this.ocrLiveResult) {

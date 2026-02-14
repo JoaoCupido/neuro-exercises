@@ -7,4 +7,13 @@ export async function isRunningInTauri() {
     }
 }
 
+export async function getPlatform() {
+    try {
+        const { platform } = await import('@tauri-apps/plugin-os');
+        return platform();
+    } catch {
+        return false; // Browser
+    }
+}
+
 export const checkIsTauri = await isRunningInTauri();
