@@ -374,6 +374,7 @@ class CameraCanvasManager {
                 type: "NeuroExercises",
                 activity: "Camera",
                 dataNE: {
+                    activity: "Camera",
                     detectedObjects: JSON.stringify(this.displayPredictions),
                 }
             };

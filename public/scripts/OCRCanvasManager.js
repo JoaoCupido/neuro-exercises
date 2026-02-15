@@ -49,6 +49,7 @@ class OCRCanvasManager {
 
     init() {
         this.startTime = null;
+        this.completeLog = [];
         this.setupCanvases();
         this.setupDrawingState();
         this.setupUI();
@@ -118,7 +119,7 @@ class OCRCanvasManager {
         this.drawingCtx.putImageData(previousState, 0, 0);
 
         this.updateUndoRedoButtons();
-        this.scheduleOCRUpdate();
+        this.scheduleOCRUpdate("UNDO");
     }
 
     redo() {
@@ -137,7 +138,7 @@ class OCRCanvasManager {
         this.drawingCtx.putImageData(nextState, 0, 0);
 
         this.updateUndoRedoButtons();
-        this.scheduleOCRUpdate();
+        this.scheduleOCRUpdate("REDO");
     }
 
     updateUndoRedoButtons() {
@@ -417,7 +418,7 @@ class OCRCanvasManager {
     }
 
     // Add new methods for live OCR display
-    scheduleOCRUpdate() {
+    scheduleOCRUpdate(state = "STOPPED_DRAWING") {
         // Clear any existing timer
         if (this.ocrUpdateTimer) {
             clearTimeout(this.ocrUpdateTimer);
@@ -425,11 +426,11 @@ class OCRCanvasManager {
 
         // Schedule OCR update after a short delay (to allow user to finish drawing)
         this.ocrUpdateTimer = setTimeout(() => {
-            this.performLiveOCR();
+            this.performLiveOCR(state);
         }, 500); // 500ms delay
     }
 
-    async performLiveOCR() {
+    async performLiveOCR(state) {
         try {
             // Prepare canvas for OCR
             const canvasData = this.prepareCanvasForOCR();
@@ -438,10 +439,10 @@ class OCRCanvasManager {
             const result = await this.recognizeWithTesseract(canvasData);
 
             // Process and display live results
-            this.updateLiveOCRDisplay(result.data.text.trim());
+            this.updateLiveOCRDisplay(result.data.text.trim(), state);
 
             // Check if text matches correct answer
-            this.checkForCorrectAnswer(result.data.text.trim());
+            this.checkForCorrectAnswer(result.data.text.trim(), state);
 
         } catch (error) {
             console.error('Live OCR Error:', error);
@@ -449,7 +450,7 @@ class OCRCanvasManager {
         }
     }
 
-    checkForCorrectAnswer(recognizedText) {
+    checkForCorrectAnswer(recognizedText, state) {
         if (!this.ocrSettings.correctAnswers || this.ocrSettings.correctAnswers.length === 0 || !recognizedText) return;
 
         const cleanRecognized = recognizedText.trim().toLowerCase();
@@ -462,11 +463,11 @@ class OCRCanvasManager {
         // Only show popup for exact match with any correct answer
         if (isCorrect) {
             this.stopTimer();
-            this.showResultsPopup(recognizedText);
+            this.showResultsPopup(recognizedText, state);
         }
     }
 
-    showResultsPopup(recognizedText) {
+    showResultsPopup(recognizedText, state) {
         // Hide live display first
         this.hideLiveOCRDisplay();
 
@@ -490,27 +491,32 @@ class OCRCanvasManager {
             this.popup.classList.remove('hidden');
         }
 
-        this.sendVuplexData(recognizedText, true);
+        this.sendVuplexData(recognizedText, state, true);
     }
 
-    sendVuplexData(recognizedText, isFinished) {
-        if (window.vuplex) {
-            let dataLog = [];
-            if (isFinished) {
-                dataLog.push({
-                    state: "FINISHED",
-                    item: "-",
-                    positionInTime: this.popupTimer
-                });
-            }
+    sendVuplexData(recognizedText, state, isFinished = false) {
+        this.completeLog.push({
+            state: state,
+            item: recognizedText,
+            positionInTime: this.popupTimer
+        });
 
+        if (isFinished) {
+            this.completeLog.push({
+                state: "FINISHED",
+                item: "-",
+                positionInTime: this.popupTimer
+            });
+        }
+
+        if (window.vuplex) {
             const sendData = {
                 type: "NeuroExercises",
                 activity: "TextRecognition",
                 dataNE: {
-                    log: dataLog,
+                    activity: "TextRecognition",
+                    log: this.completeLog,
                     correctText: this.ocrSettings.correctAnswers.join(", "),
-                    detectedText: recognizedText,
                     //image: this.screenshotDrawing(),
                     time: parseFloat(this.popupTimer.toFixed(2)),
                     //onlyShowLast: true,
@@ -595,12 +601,12 @@ class OCRCanvasManager {
         }
     }
 
-    updateLiveOCRDisplay(recognizedText) {
+    updateLiveOCRDisplay(recognizedText, state) {
         // Filter text based on detection mode
         //const filteredText = this.filterTextByDetectionMode(recognizedText || '');
         //const cleanText = filteredText.trim();
         const cleanText = recognizedText;
-        this.sendVuplexData(recognizedText, false);
+        this.sendVuplexData(recognizedText, state);
 
         if (cleanText === this.previousOCRText) {
             return;

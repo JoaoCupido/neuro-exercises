@@ -1088,6 +1088,7 @@ class DrawingCanvasManager {
                 type: "NeuroExercises",
                 activity: "Drawing",
                 dataNE: {
+                    activity: "Drawing",
                     image: base64WithoutPrefix,
                     // Include that it's compressed
                     compressed: true,
