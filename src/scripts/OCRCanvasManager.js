@@ -1003,11 +1003,15 @@ class OCRCanvasManager {
         // Process an image
         const loadedImage = canvas.toDataURL('image/png');
 
+        const basePath = window.location.pathname.includes('neuro-exercises')
+            ? '/neuro-exercises/'
+            : '/';
+
         const ocr = await OcrBrowser.create({
             models: {
-                detectionPath: '/scripts/ocrModels/ch_PP-OCRv4_det_infer.onnx',
-                recognitionPath: '/scripts/ocrModels/ch_PP-OCRv4_rec_infer.onnx',
-                dictionaryPath: '/scripts/ocrModels/ppocr_keys_v1.txt'
+                detectionPath: `${basePath}scripts/ocrModels/ch_PP-OCRv4_det_infer.onnx`,
+                recognitionPath: `${basePath}scripts/ocrModels/ch_PP-OCRv4_rec_infer.onnx`,
+                dictionaryPath: `${basePath}scripts/ocrModels/ppocr_keys_v1.txt`
             }
         })
         const result = await ocr.detect(loadedImage)
