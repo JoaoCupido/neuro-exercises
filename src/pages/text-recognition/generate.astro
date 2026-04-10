@@ -54,27 +54,6 @@ import ImportUrl from '../../components/ImportUrl.astro';
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-foreground mb-2" for="ocrLanguageSelect">
-                                OCR Language
-                            </label>
-                            <select
-                                    id="ocrLanguageSelect"
-                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                            >
-                                <option value="eng">English</option>
-                                <option value="spa">Spanish</option>
-                                <option value="fra">French</option>
-                                <option value="deu">German</option>
-                                <option value="ita">Italian</option>
-                                <option value="por">Portuguese</option>
-                                <option value="rus">Russian</option>
-                                <option value="chi_sim">Chinese (Simplified)</option>
-                                <option value="jpn">Japanese</option>
-                                <option value="kor">Korean</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-4">
                             <label class="block text-sm font-medium text-foreground mb-2" for="detectionModeSelect">
                                 Detection Mode
                             </label>
@@ -86,6 +65,26 @@ import ImportUrl from '../../components/ImportUrl.astro';
                                 <option value="letters">Letters Only</option>
                                 <option value="numbers">Numbers Only</option>
                             </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2" for="ocrConfigSelect">
+                                OCR Configuration
+                            </label>
+                            <select
+                                    id="ocrConfigSelect"
+                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                                <option value="tesseract:eng">Tesseract.js - English</option>
+                                <option value="tesseract:por">Tesseract.js - Portuguese</option>
+                                <option value="tesseract:spa">Tesseract.js - Spanish</option>
+                                <option value="tesseract:fra">Tesseract.js - French</option>
+                                <option value="guten:en">GutenOCR - English</option>
+                                <option value="paddle:en">PaddleOCR - English</option>
+                            </select>
+                            <p class="text-xs text-muted-foreground mt-1">
+                                Select the OCR engine and language combination
+                            </p>
                         </div>
                     </div>
 
@@ -234,5 +233,5 @@ import ImportUrl from '../../components/ImportUrl.astro';
             }
         });
     </script>
-    <script is:inline src="/scripts/OCRGenerateScript.js"></script>
+    <script src="../../scripts/OCRGenerateScript.js"></script>
 </Layout>

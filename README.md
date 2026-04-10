@@ -4,12 +4,15 @@ A collection of cognitive tools built with **Astro**, **Tailwind CSS**, and opti
 
 * **🖌️ Drawing Tool** – A URL‑configurable drawing canvas
 * **🔗 Trail Making Test (TMT)** – A neuropsychological sequencing exercise
+* **📷 Camera** – Camera-based activities including object detection and facial emotion recognition using webcam
+* **🔣 Text Recognition** – Convert handwritten/drawn content to text with OCR capabilities
 
 The app can be used:
 
 * **Online**, with the help of GitHub Pages
 * **Locally**, with `npm run dev`
-* **As a desktop app**, using **Tauri**, which includes multiple execution modes
+* **As a desktop app**, using **Tauri**.
+* **As a mobile app**, using **Tauri** (NOTE: it's an experimental feature, meaning some features might be broken).
 
 ---
 
@@ -20,19 +23,37 @@ The app can be used:
 * 🎨 Customizable brush sizes and colors
 * 🧹 Optional eraser mode
 * 🖼️ Background image support with opacity control
-* 🔲 Grid/pattern background option (new)
+* 🔲 Grid/pattern background option
 * 🔗 Fully configurable through URL parameters
 * 📱 Touch‑friendly and responsive
 
 ### Trail Making Test (TMT)
 
 * 🔢 Auto-generated TMT layout (nodes placed at random or fixed, based on user's request)
-* 🔤 Configurable symbol order: numbers / letters / mixed (new)
+* 🔤 Configurable symbol order: numbers / letters / mixed
 * ⏱️ Built‑in timer
-* 🖼️ Background image support with opacity control (new)
-* 🔲 Grid/pattern background option (new)
-* 📝 Result logging (WIP) (new)
-* 📊 URL‑controlled configuration
+* 🖼️ Background image support with opacity control
+* 🔲 Grid/pattern background option
+* 📝 Result logging
+
+### Camera Exercise
+
+* 🎯 **Object Detection** – Real-time identification of everyday objects through webcam
+* 😊 **Facial Emotion Recognition** – Detects and displays emotional expressions (happy, sad, angry, surprised, etc.)
+* 📱 **Front/Back Camera Selection** – Switch between user-facing and environment-facing cameras
+* 🎚️ **Adjustable Sensitivity** – Fine-tune detection thresholds (0 to 1)
+* 📊 **Customizable Display** – Control position and maximum number of detection results shown
+* 🎨 **Camera Opacity Control** – Adjust camera feed transparency (0.0 to 1.0)
+
+### Text Recognition Exercise
+
+* ✍️ **Handwriting to Text** – Convert drawn/written content to digital text using OCR (Optical Character Recognition)
+* ✅ **Answer Validation** – Compare recognized text against predefined correct answers
+* 🌐 **Multi-Language Support** – Configurable OCR language (English, Spanish, Portuguese, etc.)
+* 🔤 **Detection Modes** – Restrict recognition to letters only, numbers only, or both
+* 🎨 **Drawing Controls** – Adjustable pencil color and size
+* 🧹 **Canvas Management** – Clear, undo/redo functionality with customizable button positions
+* 🎯 **Multiple OCR Engines** – Support for Tesseract, Guten, and PaddleOCR engines
 
 ---
 
@@ -49,7 +70,7 @@ npm run dev
 
 ## Tauri Usage
 
-The project also supports **Tauri**, allowing it to run as a full desktop application.
+The project supports **Tauri**, allowing it to run as a full desktop and mobile application.
 
 ### 1. Local Tauri Development (served by Astro dev server)
 
@@ -63,9 +84,9 @@ npx tauri dev
 npx tauri build
 ```
 
-### Localhost Exposure in Final Build
+### Localhost Exposure in Final Build (Desktop only!)
 
-The **final Tauri build** also exposes a local web server accessible externally:
+The **final desktop Tauri build** also exposes a local web server accessible externally:
 
 ```
 http://localhost:9527/
@@ -78,8 +99,9 @@ This allows you to open the app in a browser even when running the desktop execu
 ## Pages
 
 * `/` – Home menu
-* `/drawing` – Drawing Canvas
-* `/tmt` – Trail Making Test
-* `/[drawing|tmt]/docs` – API documentation of certain tool
-* `/[drawing|tmt]/generate` – URL generator for certain tool
+* `/:exercise` – Individual exercise page (available exercises: drawing, tmt, camera, text-recognition)
+* `/:exercise/docs` – API documentation for any exercise
+* `/:exercise/generate` – URL generator for any exercise
+
+> **Example:** `/drawing`, `/drawing/docs`, `/drawing/generate`
 

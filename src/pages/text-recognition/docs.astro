@@ -102,6 +102,20 @@ import GridDocs from '../../components/GridDocs.astro';
                                     examples={["/?detectionMode=letters", "/?detectionMode=numbers"]}
                                     codeExample="?detectionMode=letters"
                             />
+
+                            <ParameterDoc
+                                    name="ocrConfig"
+                                    description="OCR engine and language configuration. Format: 'model:language' (e.g., 'tesseract:eng', 'guten:en'). If only model or language is provided, defaults will be used for the other."
+                                    type="String"
+                                    defaultValue="tesseract:eng"
+                                    examples={[
+                                        "/?ocrConfig=tesseract:eng",
+                                        "/?ocrConfig=tesseract:spa",
+                                        "/?ocrConfig=guten:chi_sim",
+                                        "/?ocrConfig=paddle:en"
+                                    ]}
+                                    codeExample="?ocrConfig=tesseract:eng"
+                            />
                         </div>
                     </section>
 
