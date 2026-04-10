@@ -1106,7 +1106,12 @@ class DrawingCanvasManager {
     }
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+function startManager() {
     new DrawingCanvasManager();
-});
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startManager);
+} else {
+    startManager();
+}

@@ -26,6 +26,15 @@ class CameraCanvasManager {
         };
         this.maxDisplayItems = parseInt(this.urlParams.get('maxDisplayItems')) || 5;
 
+        // Correct answers configuration
+        this.correctAnswers = (this.urlParams.get('correctAnswers') ?? "").split(',').map(s => s.trim().toLowerCase());
+
+        // Test tracking variables
+        this.testCompleted = false;
+        this.testStartTime = null;
+        this.detectedCorrectAnswers = new Set(); // Track which correct answers have been detected
+        this.hidePopupAll = this.urlParams.get('hidePopupAll') || false;
+
         this.model = null;
         this.predictions = [];
         this.displayPredictions = []; // Filtered predictions for display
@@ -45,8 +54,63 @@ class CameraCanvasManager {
         await this.loadScripts();
         await this.loadModels();
         this.setupDisplayPosition();
+        this.setupUI();
         this.hideLoading();
         this.startRendering();
+
+        this.testStartTime = Date.now();
+    }
+
+    setupUI() {
+        this.popup = document.getElementById('popup');
+        this.restartButton = document.getElementById('restartButton');
+        this.popupTimerElement = document.getElementById('popupTimer');
+
+        this.restartButton.addEventListener('click', () => this.restartTest());
+    }
+
+    showPopup() {
+        if (!this.popup) return;
+        if (this.hidePopupAll) return;
+
+        // Calculate time elapsed
+        const elapsedSeconds = Math.floor((Date.now() - this.testStartTime) / 1000);
+
+        // Update popup content
+        if (this.popupTimerElement) {
+            this.popupTimerElement.textContent = `Time: ${elapsedSeconds} seconds`;
+        }
+
+        // Show popup
+        this.popup.classList.remove('hidden');
+        this.testCompleted = true;
+    }
+
+    hidePopup() {
+        if (this.popup) {
+            this.popup.classList.add('hidden');
+        }
+    }
+
+    restartTest() {
+        // Reset all test tracking variables
+        this.testCompleted = false;
+        this.detectedCorrectAnswers.clear();
+        this.testStartTime = Date.now();
+
+        // Hide popup
+        this.hidePopup();
+
+        // Clear any existing predictions display
+        if (this.predictionList) {
+            this.predictionList.innerHTML = '';
+        }
+
+        // Reset the display predictions
+        this.displayPredictions = [];
+        this.updatePredictionDisplay();
+
+        console.log("Test restarted");
     }
 
     showCameraError() {
@@ -120,7 +184,7 @@ class CameraCanvasManager {
         this.resizeCanvas();
         window.addEventListener('resize', () => {
             this.resizeCanvas();
-            this.setupDisplayPosition(); // Reposition on resize
+            this.setupDisplayPosition();
         });
     }
 
@@ -283,6 +347,7 @@ class CameraCanvasManager {
         if (!this.model || this.video.readyState < 2) return;
         this.predictions = await this.model.detect(this.video);
         this.updateDisplayPredictions();
+        this.checkCorrectAnswers();
     }
 
     async detectFaces() {
@@ -304,6 +369,32 @@ class CameraCanvasManager {
             score: Math.max(...Object.values(det.expressions)) // expression probability
         }));
         this.updateDisplayPredictions();
+        this.checkCorrectAnswers();
+    }
+
+    checkCorrectAnswers() {
+        // Don't check if test is already completed
+        if (this.testCompleted || this.correctAnswers.length === 0 || (this.correctAnswers.length === 1 && this.correctAnswers[0] === "")) return;
+
+        // Check each prediction against correct answers
+        for (const prediction of this.displayPredictions) {
+            const predictionClass = prediction.class.toLowerCase();
+
+            // Check if this prediction matches any correct answer
+            for (const correctAnswer of this.correctAnswers) {
+                // Check for partial matches (e.g., "person" matches "person" or "person sitting")
+                if (predictionClass.includes(correctAnswer) || correctAnswer.includes(predictionClass)) {
+                    if (!this.detectedCorrectAnswers.has(correctAnswer)) {
+                        this.detectedCorrectAnswers.add(correctAnswer);
+                        console.log(`Correct answer detected: ${correctAnswer}`);
+
+                        // Optional: Play success sound or visual feedback
+                        this.showPopup();
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     updateDisplayPredictions() {
@@ -376,6 +467,8 @@ class CameraCanvasManager {
                 dataNE: {
                     activity: "Camera",
                     detectedObjects: JSON.stringify(this.displayPredictions),
+                    correctAnswers: (this.correctAnswers ?? []).join(","),
+                    testCompleted: this.testCompleted,
                 }
             };
             window.vuplex.postMessage(JSON.stringify(sendData));
@@ -385,7 +478,12 @@ class CameraCanvasManager {
     }
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+function startManager() {
     new CameraCanvasManager();
-});
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startManager);
+} else {
+    startManager();
+}

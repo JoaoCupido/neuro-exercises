@@ -23,6 +23,8 @@ function generateURL() {
     const displayHorizontal = document.getElementById("displayHorizontalSelect")?.value;
     const displayVertical = document.getElementById("displayVerticalSelect")?.value;
     const maxDisplayItems = document.getElementById("maxDisplayItemsInput")?.value;
+    const correctAnswers = document.getElementById("correctAnswersInput")?.value;
+    const hidePopupAll = document.getElementById('hidePopupAllCheck')?.checked;
 
     const params = new URLSearchParams();
 
@@ -36,6 +38,18 @@ function generateURL() {
     if (displayHorizontal && displayHorizontal !== "right") params.append("displayHorizontal", displayHorizontal);
     if (displayVertical && displayVertical !== "top") params.append("displayVertical", displayVertical);
     if (maxDisplayItems && maxDisplayItems !== "5") params.append("maxDisplayItems", maxDisplayItems);
+
+    if (correctAnswers && correctAnswers.trim()) {
+        // Clean up the input: remove spaces, split by comma, filter empty, join
+        const cleanedAnswers = correctAnswers.split(',')
+            .map(s => s.trim())
+            .filter(s => s.length > 0)
+            .join(',');
+        if (cleanedAnswers) {
+            params.append("correctAnswers", cleanedAnswers);
+        }
+    }
+    if (hidePopupAll) params.append("hidePopupAll", hidePopupAll);
 
     // Build final URL
     const baseUrl = window.location.origin + window.location.pathname.replace("/generate", "");
@@ -125,6 +139,14 @@ function applyParameters(params) {
         }
     };
 
+    // Helper function to set checkbox based on string value
+    const setCheckbox = (id, paramValue) => {
+        const checkbox = document.getElementById(id);
+        if (checkbox) {
+            checkbox.checked = paramValue === 'true';
+        }
+    };
+
     // Camera-specific parameters
     setSelect('gamemodeSelect', params.get('gamemode'));
     setInput('sensitivityInput', params.get('sensitivity'));
@@ -135,6 +157,12 @@ function applyParameters(params) {
     setSelect('displayHorizontalSelect', params.get('displayHorizontal'));
     setSelect('displayVerticalSelect', params.get('displayVertical'));
     setInput('maxDisplayItemsInput', params.get('maxDisplayItems'));
+    setCheckbox('hidePopupAllCheck', params.get('hidePopupAll'));
+
+    const correctAnswers = params.get('correctAnswers');
+    if (correctAnswers) {
+        setInput('correctAnswersInput', correctAnswers);
+    }
 }
 
 // Optional: Add auto-detection for URL in current page
