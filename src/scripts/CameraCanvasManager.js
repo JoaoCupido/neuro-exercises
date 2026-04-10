@@ -1,5 +1,3 @@
-import {isRunningInTauri} from "../utils/IsTauri.js";
-
 // CameraCanvasManager.js - Updated class
 class CameraCanvasManager {
     constructor() {
@@ -324,12 +322,9 @@ class CameraCanvasManager {
             console.log("Object detection model loaded.");
         } else if (this.gamemode === 'detectFaceEmotion') {
             console.log("Loading Face API models...");
-            const windowTauri = await isRunningInTauri();
             const isGithubPages = window.location.hostname.includes('github.io');
 
-            const MODEL_URL = windowTauri ?
-                'tauri://localhost/weights' :
-                isGithubPages ? '/neuro-exercises/weights' : '/weights';
+            const MODEL_URL = isGithubPages ? '/neuro-exercises/weights' : '/weights';
             console.log(MODEL_URL);
             await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL)
             await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
