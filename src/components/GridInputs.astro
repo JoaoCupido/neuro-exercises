@@ -1,5 +1,6 @@
 ---
 // components/GridInputs.astro
+import FormInput from "./FormInput.astro";
 ---
 
 <div class="">
@@ -14,17 +15,13 @@
     </div>
 
     <!-- Grid Color -->
-    <div class="mb-4">
-        <label for="gridColorInput" class="block text-sm font-medium text-foreground mb-2">
-            Grid Color
-        </label>
-        <input
-                type="color"
-                id="gridColorInput"
-                value="#cccccc"
-                class="w-20 h-10 rounded border border-border"
-        />
-    </div>
+    <FormInput
+            id="gridColorInput"
+            label="Grid Color"
+            type="color"
+            value="#cccccc"
+            className="mb-4"
+    />
 
     <!-- Grid Opacity -->
     <div class="mb-4">

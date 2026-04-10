@@ -3,10 +3,6 @@ node_modules
 .astro
 dist
 
-# --- Tauri ---
-/src-tauri/target/
-/src-tauri/gen/
-
 # Optional: if you embed large files here
 /src-tauri/dist/
 
@@ -18,5 +14,10 @@ dist
 # Build output from bundler
 /src-tauri/bundled/
 
-# --- Tauri Icons ---
-/src-tauri/icons
+/src-tauri/gen/android/app/build/
+/src-tauri/gen/android/app/.cxx/
+/src-tauri/gen/android/.gradle/
+/src-tauri/gen/android/local.properties
+/src-tauri/gen/android/gradle/
+/src-tauri/gen/android/gradlew
+/src-tauri/gen/android/gradlew.bat

@@ -1,0 +1,237 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FormInput from '../../components/FormInput.astro';
+import BackgroundInputs from '../../components/BackgroundInputs.astro';
+import GridInputs from '../../components/GridInputs.astro';
+import ImportUrl from '../../components/ImportUrl.astro';
+---
+
+<Layout title="Generate Text Recognition URL - Neuro Exercises">
+    <main class="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+        <div class="min-h-screen mx-auto max-w-4xl">
+            <h1 class="text-4xl font-bold text-foreground mb-2">Generate Text Recognition URL</h1>
+            <p class="text-muted-foreground mb-8">Configure your Text Recognition canvas and generate a shareable URL</p>
+
+            <div class="bg-card border border-border rounded-lg p-6 mb-8">
+                <form id="urlForm" class="space-y-6">
+                    <!-- Text Recognition Settings -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-foreground mb-4">
+                            Text Recognition Settings
+                        </h3>
+
+                        <FormInput
+                                id="pencilColorInput"
+                                label="Pencil Color"
+                                type="color"
+                                value="#000000"
+                                className="mb-4"
+                        />
+
+                        <FormInput
+                                id="pencilSizeInput"
+                                label="Pencil Size (1-50)"
+                                type="number"
+                                value="5"
+                                min="1"
+                                max="50"
+                                className="mb-4"
+                        />
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2" for="correctAnswersInput">
+                                Correct Answers (comma-separated)
+                            </label>
+                            <input
+                                    id="correctAnswersInput"
+                                    type="text"
+                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                    placeholder="Enter correct answers separated by commas (e.g., hello, world, test)"
+                            >
+                            <p class="text-xs text-muted-foreground mt-1">
+                                Separate multiple answers with commas. Any matching answer will be accepted.
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2" for="detectionModeSelect">
+                                Detection Mode
+                            </label>
+                            <select
+                                    id="detectionModeSelect"
+                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                                <option value="both">Both Letters and Numbers</option>
+                                <option value="letters">Letters Only</option>
+                                <option value="numbers">Numbers Only</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2" for="ocrConfigSelect">
+                                OCR Configuration
+                            </label>
+                            <select
+                                    id="ocrConfigSelect"
+                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                                <option value="tesseract:eng">Tesseract.js - English</option>
+                                <option value="tesseract:por">Tesseract.js - Portuguese</option>
+                                <option value="tesseract:spa">Tesseract.js - Spanish</option>
+                                <option value="tesseract:fra">Tesseract.js - French</option>
+                                <option value="guten:en">GutenOCR - English</option>
+                                <option value="paddle:en">PaddleOCR - English</option>
+                            </select>
+                            <p class="text-xs text-muted-foreground mt-1">
+                                Select the OCR engine and language combination
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 h-0.5 bg-border" />
+
+                    <!-- Interface Settings -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-foreground mb-4">
+                            Interface Settings
+                        </h3>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2" for="clearButtonPositionSelect">
+                                Clear Button Position
+                            </label>
+                            <select
+                                    id="clearButtonPositionSelect"
+                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                                <option value="top-left">Top Left</option>
+                                <option value="top-right">Top Right</option>
+                                <option value="top-center">Top Center</option>
+                                <option value="middle-left">Middle Left</option>
+                                <option value="middle-center">Middle Center</option>
+                                <option value="middle-right">Middle Right</option>
+                                <option value="bottom-left">Bottom Left</option>
+                                <option value="bottom-center" selected>Bottom Center</option>
+                                <option value="bottom-right">Bottom Right</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2" for="undoRedoPositionSelect">
+                                Undo/Redo Buttons Position
+                            </label>
+                            <select
+                                    id="undoRedoPositionSelect"
+                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                                <option value="top-left">Top Left</option>
+                                <option value="top-center">Top Center</option>
+                                <option value="top-right">Top Right</option>
+                                <option value="middle-left">Middle Left</option>
+                                <option value="middle-center">Middle Center</option>
+                                <option value="middle-right">Middle Right</option>
+                                <option value="bottom-left">Bottom Left</option>
+                                <option value="bottom-center" selected>Bottom Center</option>
+                                <option value="bottom-right">Bottom Right</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-3 mb-4">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" id="hideOCRLiveCheck" class="text-primary" />
+                                <span class="text-foreground font-medium">Hide OCR Live Display</span>
+                            </label>
+                            <p class="text-xs text-muted-foreground ml-6 mt-1">
+                                When checked, the live Text Recognition results won't be shown during drawing
+                            </p>
+
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" id="hideResultsPopupCheck" class="text-primary" />
+                                <span class="text-foreground font-medium">Hide Results Popup</span>
+                            </label>
+
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" id="hidePopupButtonsCheck" class="text-primary" />
+                                <span class="text-foreground font-medium">Hide Popup Buttons</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 h-0.5 bg-border" />
+
+                    <!-- Reusable Background Controls -->
+                    <BackgroundInputs />
+
+                    <hr class="my-4 h-0.5 bg-border" />
+
+                    <!-- Reusable Grid Controls -->
+                    <GridInputs />
+                </form>
+            </div>
+
+            <!-- Import URL Section -->
+            <ImportUrl exercise="Text Recognition" />
+
+            <!-- Generated URL -->
+            <div id="resultSection" class="bg-card border border-border rounded-lg p-6">
+                <h2 class="text-xl font-bold text-foreground mb-4">Generated URL</h2>
+
+                <div class="bg-secondary rounded-lg p-4 mb-4 overflow-x-auto">
+                    <code id="generatedUrl" class="text-sm text-foreground break-all"></code>
+                </div>
+
+                <div class="flex gap-4">
+                    <button
+                            id="copyBtn"
+                            class="px-6 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity"
+                    >
+                        Copy URL
+                    </button>
+                    <button
+                            id="openBtn"
+                            class="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-accent transition-colors"
+                    >
+                        Open Text Recognition
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+        import { isRunningInTauri } from "../../utils/IsTauri.js";
+        const windowTauri = await isRunningInTauri();
+
+        let currentPlatform = "web";
+        if (windowTauri) {
+            const os = await import("@tauri-apps/plugin-os");
+            currentPlatform = os.platform();
+        }
+
+        const openBtn = document.getElementById('openBtn');
+        const generatedUrlEl = document.getElementById('generatedUrl');
+
+        openBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const url = generatedUrlEl.textContent.trim();
+            if (!url) return;
+
+            if (windowTauri && currentPlatform !== "android" && currentPlatform !== "ios") {
+                const label = `textRecognition-${Date.now()}`;
+                const win = new WebviewWindow(label, { url });
+
+                win.once("tauri://created", () => {
+                    console.log("Text Recognition window created");
+                });
+                win.once("tauri://error", (e) => {
+                    console.error("Window creation error:", e);
+                });
+            } else {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            }
+        });
+    </script>
+    <script src="../../scripts/OCRGenerateScript.js"></script>
+</Layout>

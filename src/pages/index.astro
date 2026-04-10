@@ -7,7 +7,7 @@ import packageJson from '../../package.json';
 
 <Layout title="Neuro Exercises - Main Menu">
     <main class="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-        <div class="min-h-screen mx-auto max-w-4xl">
+        <div class="min-h-screen mx-auto">
             <div class="text-center mb-12">
                 <div class="flex items-center justify-center gap-4 mb-4">
                     <h1 class="text-4xl font-bold text-foreground">Neuro Exercises</h1>
@@ -18,28 +18,28 @@ import packageJson from '../../package.json';
                 <p class="text-muted-foreground text-lg">Select an exercise to begin</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                 {exercisesList.map((ex) => (
-                    <div class="bg-card border border-border rounded-lg overflow-hidden" id={ex.id}>
+                    <div class="bg-card border border-border rounded-lg overflow-hidden flex flex-col h-full" id={ex.id}>
                         <a
-                            href={ex.path}
-                            class="block p-6 hover:bg-accent/50 transition-colors group"
+                                href={ex.path}
+                                class="block p-6 hover:bg-accent/50 transition-colors group flex-1"
                         >
-                            <div class="text-center">
-                                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                            <div class="text-center h-full flex flex-col">
+                                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform flex-shrink-0">
                                     <ex.icon class="w-8 h-8 text-primary" />
                                 </div>
-                                <h3 class="text-xl font-semibold text-foreground mb-2">
+                                <h3 class="text-xl font-semibold text-foreground mb-2 flex-shrink-0">
                                     {ex.title}
                                 </h3>
-                                <p class="text-muted-foreground">
-                                    {ex.description}
-                                </p>
+                                <div class="text-muted-foreground flex-1 flex items-center justify-center">
+                                    <p>{ex.description}</p>
+                                </div>
                             </div>
                         </a>
 
-                        <!-- Subcards -->
-                        <div class="border-t border-border grid grid-cols-2 divide-x divide-border">
+                        <!-- Subcards - pinned to bottom -->
+                        <div class="border-t border-border grid grid-cols-2 divide-x divide-border mt-auto">
                             <a
                                     href={ex.path + `/docs`}
                                     class="p-4 text-center hover:bg-accent/30 transition-colors group/sub"

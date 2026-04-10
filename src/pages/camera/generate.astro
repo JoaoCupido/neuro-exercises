@@ -146,16 +146,8 @@ import ImportUrl from '../../components/ImportUrl.astro';
 
     <script>
         import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
-
-        async function safeIsTauri() {
-            try {
-                const { isTauri } = await import('@tauri-apps/api/core');
-                return isTauri();
-            } catch {
-                return false; // Browser
-            }
-        }
-        const windowTauri = await safeIsTauri();
+        import { isRunningInTauri } from "../../utils/IsTauri.js";
+        const windowTauri = await isRunningInTauri();
 
         let currentPlatform = "web";
         if (windowTauri) {
@@ -194,5 +186,5 @@ import ImportUrl from '../../components/ImportUrl.astro';
             }
         });
     </script>
-    <script is:inline src={`${process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : ""}/scripts/CameraGenerateScript.js`}></script>
+    <script src="../../scripts/CameraGenerateScript.js"></script>
 </Layout>

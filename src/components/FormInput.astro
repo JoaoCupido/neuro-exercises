@@ -25,6 +25,10 @@ export interface FormInputProps {
             min={Astro.props.min}
             max={Astro.props.max}
             disabled={Astro.props.disabled}
-            class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+            class={
+                Astro.props.type === "color" ?
+                    "w-20 h-10 rounded border border-border" :
+                    "w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+            }
     />
 </div>

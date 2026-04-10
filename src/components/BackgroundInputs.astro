@@ -1,22 +1,19 @@
 ---
 // components/BackgroundInputs.astro
+import FormInput from "./FormInput.astro";
 ---
 
 <div class="">
     <h3 class="text-lg font-semibold text-foreground mb-4">Background Settings</h3>
 
     <!-- Background Color -->
-    <div class="mb-4">
-        <label for="bgColorInput" class="block text-sm font-medium text-foreground mb-2">
-            Background Color
-        </label>
-        <input
-                type="color"
-                id="bgColorInput"
-                value="#ffffff"
-                class="w-20 h-10 rounded border border-border"
-        />
-    </div>
+    <FormInput
+            id="bgColorInput"
+            label="Background Color"
+            type="color"
+            value="#ffffff"
+            className="mb-4"
+    />
 
     <!-- Background Image -->
     <div class="mb-4">

@@ -22,7 +22,7 @@ import Layout from '../../layouts/Layout.astro';
                         Restart Test
                     </button>
                     <a
-                            href={`./`}
+                            href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "/")}
                             class="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-medium hover:bg-accent transition-colors text-center"
                     >
                         Back to Menu
@@ -40,5 +40,5 @@ import Layout from '../../layouts/Layout.astro';
         </div>
     </main>
 
-    <script type="module" is:inline src={`${process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : ""}/scripts/TMTCanvasManager.js`}></script>
+    <script src="../../scripts/TMTCanvasManager.js"></script>
 </Layout>

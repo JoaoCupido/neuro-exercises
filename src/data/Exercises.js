@@ -1,4 +1,4 @@
-import { Pencil, Waypoints, Zap, FileText, Camera } from "@lucide/astro";
+import { Pencil, Waypoints, Zap, FileText, Camera, Text, WholeWord } from "@lucide/astro";
 
 /*
 export interface Exercise {
@@ -39,10 +39,21 @@ export const exercisesList = [
         pathWithoutDot: "/camera",
     },
 
+    {
+        id: "text-recognition",
+        title: "Text Recognition",
+        //description: "DEBUG",
+        description: "Handwriting recognition for numbers, letters, and words",
+        icon: WholeWord,
+        path: "./text-recognition",
+        pathWithoutDot: "/text-recognition"
+    },
+
     // Add more exercises later:
     // {
     //   id: "stroop",
     //   title: "Stroop Test",
+    //   description: "DEBUG",
     //   icon: Zap,
     //   path: "/stroop"
     // }
