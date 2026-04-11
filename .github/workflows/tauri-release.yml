@@ -53,5 +53,6 @@ jobs:
           releaseName: "Release ${{ github.ref_name }}"
           releaseDraft: true
           prerelease: false
+          uploadPlainBinary: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
