@@ -1,6 +1,6 @@
 [package]
-name = "app"
-version = "0.1.0"
+name = "NeuroExercises"
+version = "1.0.4"
 description = "Tauri launcher for Neuro Exercises"
 authors = ["you"]
 license = ""
