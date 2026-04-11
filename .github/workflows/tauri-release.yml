@@ -5,6 +5,15 @@ on:
     tags:
       - 'v*'
 
+# Add permissions at workflow level
+permissions:
+  contents: write  # This is crucial for creating releases
+  actions: read
+  checks: read
+  metadata: read
+  pull-requests: read
+  statuses: read
+
 jobs:
   create-release:
     runs-on: ubuntu-latest
