@@ -1,7 +1,6 @@
 // WantedShapesManager.js
 import { BackgroundSettings } from './BackgroundSettings.js';
 import { GridSettings } from './GridSettings.js';
-import { Square, RectangleHorizontal, Circle, Triangle, Cross, Heart, Star, Pentagon, Hexagon, Diamond, createLucideIcon } from '@lucide/astro';
 
 class WantedShapesManager {
     constructor() {
@@ -47,7 +46,7 @@ class WantedShapesManager {
         this.shapeSize = parseInt(this.urlParams.get('shapeSize')) || 40;
         this.movementType = this.urlParams.get('movement') || 'linear';
         this.borderBehavior = this.urlParams.get('borderBehavior') || 'collision';
-        this.targetCriteria = this.urlParams.get('target') || 'red';
+        this.targetCriteria = this.urlParams.get('target') || 'red%2520shapes';
         this.targetValidationError = this.validateTargetCriteria();
 
         // Animation settings
