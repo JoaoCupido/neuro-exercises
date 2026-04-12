@@ -114,6 +114,15 @@ import GridDocs from "../../components/GridDocs.astro";
                             />
 
                             <ParameterDoc
+                                    name="correctAnswers"
+                                    description="Comma-separated list of objects or emotions that will complete the test (e.g., 'person, happy')."
+                                    type="String"
+                                    defaultValue="undefined"
+                                    examples={['/?correctAnswers=person,book,chair', '/?correctAnswers=happy,sad,angry']}
+                                    codeExample="?correctAnswers=person,coffee,mouse"
+                            />
+
+                            <ParameterDoc
                                     name="hidePopupAll"
                                     description="When set to true, completely hides the results popup after test completion."
                                     type="Boolean"

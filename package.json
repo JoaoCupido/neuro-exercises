@@ -1,7 +1,7 @@
 {
   "name": "astro-drawing-canvas",
   "type": "module",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "scripts": {
     "dev": "astro dev --host",
     "start": "astro dev",
@@ -17,7 +17,8 @@
     "android:release": "rimraf src-tauri/target && astro build && tauri android build",
     "tauri": "tauri",
     "update-desktop-icon": "npx tauri icon ./desktop-icon.png",
-    "update-mobile-icon": "npx tauri icon ./mobile-icon.png"
+    "update-mobile-icon": "npx tauri icon ./mobile-icon.png",
+    "cargo:update": "cd ./src-tauri && cargo update"
   },
   "dependencies": {
     "@gutenye/ocr-browser": "^1.4.8",
@@ -36,6 +37,7 @@
     "astro": "5.18.1",
     "client-side-ocr": "^2.1.0",
     "ffocr": "^0.1.12",
+    "lucide": "^1.8.0",
     "onnxruntime-web": "^1.24.3",
     "paddleocr": "^1.1.1",
     "paddleocr-browser": "^1.0.3",

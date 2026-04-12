@@ -10,12 +10,21 @@ export interface FormInputProps {
     disabled?: boolean;
     note?: string;
     className?: string;
+    step?: number;
 }
 ---
 
 <div class={Astro.props.className}>
-    <label for={Astro.props.id} class="block text-sm font-medium text-foreground mb-2">
-        {Astro.props.label} {Astro.props.note && <span class="text-xs text-muted-foreground mt-1">- {Astro.props.note}</span>}
+    <label for={Astro.props.id} class=`block text-sm font-medium text-foreground ${Astro.props.type === "range" ? "mb-0" : "mb-2"}`>
+        {Astro.props.label}
+        {Astro.props.type === "range" && (
+                <span id={`${Astro.props.id}-value`} class="text-xs text-muted-foreground mt-1">
+                ({Astro.props.value})
+            </span>
+        )}
+        {Astro.props.note && (
+                <span class="text-xs text-muted-foreground mt-1">- {Astro.props.note}</span>
+        )}
     </label>
     <input
             type={Astro.props.type}
@@ -24,6 +33,7 @@ export interface FormInputProps {
             placeholder={Astro.props.placeholder}
             min={Astro.props.min}
             max={Astro.props.max}
+            step={Astro.props.step}
             disabled={Astro.props.disabled}
             class={
                 Astro.props.type === "color" ?
@@ -32,3 +42,21 @@ export interface FormInputProps {
             }
     />
 </div>
+
+<script>
+    // Add client-side script to handle range input value updates
+    document.addEventListener('DOMContentLoaded', () => {
+        const rangeInputs = document.querySelectorAll('input[type="range"]');
+        rangeInputs.forEach(input => {
+            const displayId = `${input.id}-value`;
+            const displaySpan = document.getElementById(displayId);
+            if (displaySpan) {
+                const updateDisplay = () => {
+                    displaySpan.textContent = `(${input?.value})`;
+                };
+                input.addEventListener('input', updateDisplay);
+                updateDisplay(); // Initialize
+            }
+        });
+    });
+</script>

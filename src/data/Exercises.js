@@ -1,4 +1,4 @@
-import { Pencil, Waypoints, Zap, FileText, Camera, Text, WholeWord } from "@lucide/astro";
+import { Pencil, Waypoints, Zap, FileText, Camera, Text, WholeWord, Shapes } from "@lucide/astro";
 
 /*
 export interface Exercise {
@@ -47,6 +47,16 @@ export const exercisesList = [
         icon: WholeWord,
         path: "./text-recognition",
         pathWithoutDot: "/text-recognition"
+    },
+
+    {
+        id: "find-shapes",
+        title: "Find Shapes",
+        //description: "DEBUG",
+        description: "Quickly find the moving target shapes and colors on screen",
+        icon: Shapes,
+        path: "./find-shapes",
+        pathWithoutDot: "/find-shapes"
     },
 
     // Add more exercises later:

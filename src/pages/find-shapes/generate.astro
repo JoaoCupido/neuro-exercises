@@ -1,0 +1,472 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FormInput from '../../components/FormInput.astro';
+import BackgroundInputs from '../../components/BackgroundInputs.astro';
+import GridInputs from '../../components/GridInputs.astro';
+import ImportUrl from '../../components/ImportUrl.astro';
+import { Square, RectangleHorizontal, Circle, Triangle, Cross, Heart, Star, Pentagon, Hexagon, Diamond } from '@lucide/astro';
+---
+
+<Layout title="Generate Wanted Shapes URL - Neuro Exercises">
+    <main class="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+        <div class="min-h-screen mx-auto max-w-4xl">
+            <h1 class="text-4xl font-bold text-foreground mb-2">Generate Wanted Shapes URL</h1>
+            <p class="text-muted-foreground mb-8">Configure your Wanted Shapes minigame and generate a shareable URL</p>
+
+            <div class="bg-card border border-border rounded-lg p-6 mb-8">
+                <form id="urlForm" class="space-y-6">
+                    <!-- Basic Settings -->
+                    <div class="">
+                        <h3 class="text-lg font-semibold text-foreground mb-4">Game Settings</h3>
+
+                        <FormInput
+                                id="numShapesInput"
+                                label="Number of Shapes"
+                                type="number"
+                                value="20"
+                                min="5"
+                                max="50"
+                                note="Total number of shapes on screen"
+                                className="mb-4"
+                        />
+
+                        <FormInput
+                                id="shapeSizeInput"
+                                label="Shape Size (pixels)"
+                                type="number"
+                                value="40"
+                                min="20"
+                                max="80"
+                                note="Size of the shapes"
+                                className="mb-4"
+                        />
+
+                        <!-- Add this to the Basic Settings section in the generation page -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2">
+                                Available Colors
+                            </label>
+                            <div class="space-y-2">
+                                <div class="flex flex-wrap gap-3">
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="red" checked class="color-checkbox text-primary" />
+                                        <span class="w-4 h-4 rounded-full bg-red-500"></span>
+                                        <span>Red</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="yellow" checked class="color-checkbox text-primary" />
+                                        <span class="w-4 h-4 rounded-full bg-yellow-500"></span>
+                                        <span>Yellow</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="blue" checked class="color-checkbox text-primary" />
+                                        <span class="w-4 h-4 rounded-full bg-blue-500"></span>
+                                        <span>Blue</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="green" checked class="color-checkbox text-primary" />
+                                        <span class="w-4 h-4 rounded-full bg-green-500"></span>
+                                        <span>Green</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="white" class="color-checkbox text-primary" />
+                                        <span class="w-4 h-4 rounded-full bg-white border border-border"></span>
+                                        <span>White</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="black" class="color-checkbox text-primary" />
+                                        <span class="w-4 h-4 rounded-full bg-black"></span>
+                                        <span>Black</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="purple" class="color-checkbox text-primary" />
+                                        <span class="w-4 h-4 rounded-full bg-purple-500"></span>
+                                        <span>Purple</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="pink" class="color-checkbox text-primary" />
+                                        <span class="w-4 h-4 rounded-full bg-pink-500"></span>
+                                        <span>Pink</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="orange" class="color-checkbox text-primary" />
+                                        <span class="w-4 h-4 rounded-full bg-orange-500"></span>
+                                        <span>Orange</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="brown" class="color-checkbox text-primary" />
+                                        <span class="w-4 h-4 rounded-full bg-[#8b4513]"></span>
+                                        <span>Brown</span>
+                                    </label>
+                                </div>
+                                <p class="text-sm text-muted-foreground mt-2">
+                                    Select which colors will appear in the game. At least one color must be selected.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2">
+                                Available Shapes
+                            </label>
+                            <div class="space-y-2">
+                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                    <label class="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-secondary transition-colors cursor-pointer">
+                                        <input type="checkbox" value="square" checked class="shape-checkbox text-primary w-4 h-4" />
+                                        <Square />
+                                        <span>Square</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-secondary transition-colors cursor-pointer">
+                                        <input type="checkbox" value="triangle" checked class="shape-checkbox text-primary w-4 h-4" />
+                                        <Triangle />
+                                        <span>Triangle</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-secondary transition-colors cursor-pointer">
+                                        <input type="checkbox" value="circle" checked class="shape-checkbox text-primary w-4 h-4" />
+                                        <Circle />
+                                        <span>Circle</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-secondary transition-colors cursor-pointer">
+                                        <input type="checkbox" value="star" checked class="shape-checkbox text-primary w-4 h-4" />
+                                        <Star />
+                                        <span>Star</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-secondary transition-colors cursor-pointer">
+                                        <input type="checkbox" value="rectangle" class="shape-checkbox text-primary w-4 h-4" />
+                                        <RectangleHorizontal />
+                                        <span>Rectangle</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-secondary transition-colors cursor-pointer">
+                                        <input type="checkbox" value="pentagon" class="shape-checkbox text-primary w-4 h-4" />
+                                        <Pentagon />
+                                        <span>Pentagon</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-secondary transition-colors cursor-pointer">
+                                        <input type="checkbox" value="hexagon" class="shape-checkbox text-primary w-4 h-4" />
+                                        <Hexagon />
+                                        <span>Hexagon</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-secondary transition-colors cursor-pointer">
+                                        <input type="checkbox" value="diamond" class="shape-checkbox text-primary w-4 h-4" />
+                                        <Diamond />
+                                        <span>Diamond</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-secondary transition-colors cursor-pointer">
+                                        <input type="checkbox" value="heart" class="shape-checkbox text-primary w-4 h-4" />
+                                        <Heart />
+                                        <span>Heart</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-secondary transition-colors cursor-pointer">
+                                        <input type="checkbox" value="cross" class="shape-checkbox text-primary w-4 h-4" />
+                                        <Cross />
+                                        <span>Cross</span>
+                                    </label>
+                                </div>
+                                <p class="text-sm text-muted-foreground mt-2">
+                                    Select which shapes will appear in the game. At least one shape must be selected.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2">
+                                Target to Find
+                            </label>
+
+                            <!-- Target Type Selection -->
+                            <div class="flex gap-4 mb-4">
+                                <label class="flex items-center gap-2">
+                                    <input type="radio" name="targetType" value="color" checked class="text-primary" />
+                                    <span>By Color</span>
+                                </label>
+                                <label class="flex items-center gap-2">
+                                    <input type="radio" name="targetType" value="shape" class="text-primary" />
+                                    <span>By Shape</span>
+                                </label>
+                                <label class="flex items-center gap-2">
+                                    <input type="radio" name="targetType" value="combination" class="text-primary" />
+                                    <span>Color + Shape</span>
+                                </label>
+                            </div>
+
+                            <!-- Target by Color -->
+                            <div id="targetByColor" class="target-option">
+                                <select
+                                        id="targetColorSelect"
+                                        class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                >
+                                    <option value="red">Red Shapes</option>
+                                    <option value="blue">Blue Shapes</option>
+                                    <option value="green">Green Shapes</option>
+                                    <option value="yellow">Yellow Shapes</option>
+                                    <option value="purple">Purple Shapes</option>
+                                    <option value="pink">Pink Shapes</option>
+                                    <option value="orange">Orange Shapes</option>
+                                    <option value="brown">Brown Shapes</option>
+                                    <option value="black">Black Shapes</option>
+                                    <option value="white">White Shapes</option>
+                                </select>
+                            </div>
+
+                            <!-- Target by Shape -->
+                            <div id="targetByShape" class="target-option" style="display: none;">
+                                <select
+                                        id="targetShapeSelect"
+                                        class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                >
+                                    <option value="circle">Circles</option>
+                                    <option value="square">Squares</option>
+                                    <option value="triangle">Triangles</option>
+                                    <option value="rectangle">Rectangles</option>
+                                    <option value="star">Stars</option>
+                                    <option value="pentagon">Pentagons</option>
+                                    <option value="hexagon">Hexagons</option>
+                                    <option value="diamond">Diamonds</option>
+                                    <option value="heart">Hearts</option>
+                                    <option value="cross">Crosses/Pluses</option>
+                                </select>
+                            </div>
+
+                            <!-- Target by Combination -->
+                            <div id="targetByCombination" class="target-option" style="display: none;">
+                                <div class="space-y-3">
+                                    <select
+                                            id="combinationColorSelect"
+                                            class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                    >
+                                        <option value="red">Red</option>
+                                        <option value="blue">Blue</option>
+                                        <option value="green">Green</option>
+                                        <option value="yellow">Yellow</option>
+                                        <option value="purple">Purple</option>
+                                        <option value="pink">Pink</option>
+                                        <option value="orange">Orange</option>
+                                        <option value="brown">Brown</option>
+                                        <option value="black">Black</option>
+                                        <option value="white">White</option>
+                                    </select>
+                                    <select
+                                            id="combinationShapeSelect"
+                                            class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                    >
+                                        <option value="circle">Circle</option>
+                                        <option value="square">Square</option>
+                                        <option value="triangle">Triangle</option>
+                                        <option value="rectangle">Rectangle</option>
+                                        <option value="star">Star</option>
+                                        <option value="pentagon">Pentagon</option>
+                                        <option value="hexagon">Hexagon</option>
+                                        <option value="diamond">Diamond</option>
+                                        <option value="heart">Heart</option>
+                                        <option value="cross">Cross</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <FormInput
+                                id="targetCountInput"
+                                label="Number of Target Shapes"
+                                type="number"
+                                value=""
+                                min="1"
+                                max="50"
+                                note="Leave empty for random distribution. Set a specific number of shapes that match the target criteria."
+                                className="mb-4"
+                        />
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2">
+                                Movement Type
+                            </label>
+                            <select
+                                    id="movementSelect"
+                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                                <option value="linear">Linear - Constant direction</option>
+                                <option value="swirly">Swirly - Circular motion</option>
+                                <option value="bouncy">Bouncy - Vertical oscillation</option>
+                                <option value="wavy">Wavy - Sine wave motion</option>
+                                <option value="spiral">Spiral - Inward spiral</option>
+                                <option value="random">Random - Chaotic movement</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2">
+                                Border Behavior
+                            </label>
+                            <select
+                                    id="borderBehaviorSelect"
+                                    class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                                <option value="collision">Collision - Bounce off walls (angle reflection)</option>
+                                <option value="wrap">Screen Wrapping - Teleport to opposite side</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 h-0.5 bg-border" />
+
+                    <!-- Animation Settings -->
+                    <div class="">
+                        <h3 class="text-lg font-semibold text-foreground mb-4">Animation Settings</h3>
+
+                        <FormInput
+                                id="speedInput"
+                                label="Movement Speed"
+                                type="range"
+                                value="1.0"
+                                min="0.2"
+                                max="3.0"
+                                step="0.05"
+                                note="Speed multiplier for all movements"
+                        />
+
+                        <FormInput
+                                id="swirlSpeedInput"
+                                label="Swirl Speed"
+                                type="range"
+                                value="0.02"
+                                min="0.005"
+                                max="0.1"
+                                step="0.005"
+                                note="Rotation speed for swirly movement"
+                        />
+
+                        <FormInput
+                                id="bounceAmplitudeInput"
+                                label="Bounce Amplitude"
+                                type="range"
+                                value="50"
+                                min="10"
+                                max="150"
+                                step="5"
+                                note="Height of bounce for bouncy movement"
+                        />
+
+                        <FormInput
+                                id="bounceFrequencyInput"
+                                label="Bounce Frequency"
+                                type="range"
+                                value="0.005"
+                                min="0.001"
+                                max="0.02"
+                                step="0.001"
+                                note="Speed of bounce oscillation"
+                        />
+
+                        <div class="mb-4">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" id="showTimerCheck" checked class="text-primary" />
+                                <span class="text-foreground font-medium">Show Timer</span>
+                            </label>
+                        </div>
+
+                        <div class="mt-4">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" id="hidePopupAllCheck" class="text-primary" />
+                                <span class="text-foreground font-medium">Hide Popup Completely</span>
+                            </label>
+                            <p class="text-sm text-muted-foreground mt-1 ml-6">
+                                When checked, the results popup will not be shown at all after test completion.
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 h-0.5 bg-border" />
+
+                    <!-- Reusable Background Controls -->
+                    <BackgroundInputs />
+
+                    <hr class="my-4 h-0.5 bg-border" />
+
+                    <!-- Reusable Grid Controls -->
+                    <GridInputs />
+                </form>
+            </div>
+
+            <!-- Import URL Section -->
+            <ImportUrl exercise="wanted-shapes" />
+
+            <!-- Generated URL -->
+            <div id="resultSection" class="bg-card border border-border rounded-lg p-6">
+                <h2 class="text-xl font-bold text-foreground mb-4">Generated URL</h2>
+
+                <div class="bg-secondary rounded-lg p-4 mb-4 overflow-x-auto">
+                    <code id="generatedUrl" class="text-sm text-foreground break-all"></code>
+                </div>
+
+                <div class="flex gap-4">
+                    <button
+                            id="copyBtn"
+                            class="px-6 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity"
+                    >
+                        Copy URL
+                    </button>
+                    <button
+                            id="openBtn"
+                            class="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-accent transition-colors"
+                    >
+                        Open Game
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+        import { isRunningInTauri } from "../../utils/IsTauri.js";
+        const windowTauri = await isRunningInTauri();
+
+        let currentPlatform = "web";
+        if (windowTauri) {
+            const os = await import("@tauri-apps/plugin-os");
+            currentPlatform = os.platform();
+        }
+
+        const openBtn = document.getElementById('openBtn');
+        const generatedUrlEl = document.getElementById('generatedUrl');
+
+        openBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const url = generatedUrlEl.textContent.trim();
+            if (!url) return;
+
+            if (windowTauri && currentPlatform !== "android" && currentPlatform !== "ios") {
+                const label = `wanted-shapes-${Date.now()}`;
+                const win = new WebviewWindow(label, { url });
+                win.once("tauri://created", () => console.log("Wanted Shapes window created"));
+                win.once("tauri://error", (e) => console.error("Window creation error:", e));
+            } else {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            }
+        });
+    </script>
+    <script>
+        // Target type switching
+        const targetTypeRadios = document.querySelectorAll('input[name="targetType"]');
+        const targetByColor = document.getElementById('targetByColor');
+        const targetByShape = document.getElementById('targetByShape');
+        const targetByCombination = document.getElementById('targetByCombination');
+
+        targetTypeRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                targetByColor.style.display = 'none';
+                targetByShape.style.display = 'none';
+                targetByCombination.style.display = 'none';
+
+                if (e.target.value === 'color') {
+                    targetByColor.style.display = 'block';
+                } else if (e.target.value === 'shape') {
+                    targetByShape.style.display = 'block';
+                } else if (e.target.value === 'combination') {
+                    targetByCombination.style.display = 'block';
+                }
+            });
+        });
+    </script>
+    <script src="../../scripts/WantedShapesGenerateScript.js"></script>
+</Layout>
