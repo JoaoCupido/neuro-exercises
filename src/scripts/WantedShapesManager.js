@@ -654,7 +654,7 @@ class WantedShapesManager {
     }
 
     applyBorderBehavior(shape) {
-        const margin = this.shapeSize;
+        const margin = this.shapeSize/2;
 
         switch(this.borderBehavior) {
             case 'wrap':
