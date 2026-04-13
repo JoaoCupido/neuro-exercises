@@ -64,10 +64,14 @@ function getFormData() {
         target = `all ${color} ${shape}`;
     }
 
+    // Get seed value
+    const seedInput = document.getElementById('seedInput');
+    const seed = seedInput ? seedInput.value : '';
+
     return {
         numShapes: document.getElementById('numShapesInput').value,
         shapeSize: document.getElementById('shapeSizeInput').value,
-        targetCount: document.getElementById('targetCountInput').value, // NEW: target count
+        targetCount: document.getElementById('targetCountInput').value,
         movement: document.getElementById('movementSelect').value,
         borderBehavior: document.getElementById('borderBehaviorSelect').value,
         target: target,
@@ -77,6 +81,9 @@ function getFormData() {
         bounceFrequency: document.getElementById('bounceFrequencyInput').value,
         showTimer: document.getElementById('showTimerCheck').checked,
         hidePopupAll: document.getElementById('hidePopupAllCheck')?.checked,
+
+        // Seed parameter
+        seed: seed,
 
         // Color and shape lists
         colors: selectedColors.join(','),
@@ -107,7 +114,12 @@ function buildURLParams(data) {
     if (data.numShapes && data.numShapes !== '20') params.append('numShapes', data.numShapes);
     if (data.shapeSize && data.shapeSize !== '40') params.append('shapeSize', data.shapeSize);
 
-    // NEW: Target count parameter
+    // Seed parameter
+    if (data.seed && data.seed !== '' && parseInt(data.seed) >= 0) {
+        params.append('seed', data.seed);
+    }
+
+    // Target count parameter
     if (data.targetCount && data.targetCount !== '' && parseInt(data.targetCount) > 0) {
         params.append('targetCount', data.targetCount);
     }
@@ -247,7 +259,10 @@ function applyParameters(params) {
     setInput('numShapesInput', params.get('numShapes'));
     setInput('shapeSizeInput', params.get('shapeSize'));
 
-    // NEW: Target count parameter
+    // Seed parameter
+    setInput('seedInput', params.get('seed'));
+
+    // Target count parameter
     setInput('targetCountInput', params.get('targetCount'));
 
     setSelect('movementSelect', params.get('movement'));

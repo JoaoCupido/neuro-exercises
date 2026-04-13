@@ -1,6 +1,7 @@
 // WantedShapesManager.js
 import { BackgroundSettings } from './BackgroundSettings.js';
 import { GridSettings } from './GridSettings.js';
+import {SeededRandom} from "./SeededRandom.js";
 
 class WantedShapesManager {
     constructor() {
@@ -11,10 +12,11 @@ class WantedShapesManager {
         this.gridSettings = new GridSettings(this.urlParams);
         this.loadGameSettings();
 
+        this.initRandomGenerator();
+
         this.init();
     }
 
-    // Update the loadGameSettings method in WantedShapesManager.js
     loadGameSettings() {
         // Parse colors list from URL or use default
         const colorsParam = this.urlParams.get('colors');
@@ -48,6 +50,7 @@ class WantedShapesManager {
         this.borderBehavior = this.urlParams.get('borderBehavior') || 'collision';
         this.targetCriteria = this.urlParams.get('target') || 'red%2520shapes';
         this.targetValidationError = this.validateTargetCriteria();
+        this.seed = this.urlParams.get('seed') ? parseInt(this.urlParams.get('seed')) : null;
 
         // Animation settings
         this.speed = parseFloat(this.urlParams.get('speed')) || 1.00;
@@ -59,8 +62,31 @@ class WantedShapesManager {
         this.showTimer = this.urlParams.get('showTimer') !== 'false';
         this.hidePopupAll = this.urlParams.get('hidePopupAll') || false;
 
+        this.completeLog = [];
+
         // Parse target criteria
         this.parseTargetCriteria();
+    }
+
+    initRandomGenerator() {
+        if (this.seed !== null) {
+            this.random = new SeededRandom(this.seed);
+            console.log(`Using seeded random generator with seed: ${this.seed}`);
+        } else {
+            // Use regular Math.random if no seed provided
+            this.random = {
+                random: () => Math.random(),
+                randInt: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
+                randomChoice: (array) => array[Math.floor(Math.random() * array.length)],
+                shuffleArray: (array) => {
+                    for (let i = array.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [array[i], array[j]] = [array[j], array[i]];
+                    }
+                    return array;
+                }
+            };
+        }
     }
 
     validateTargetCriteria() {
@@ -526,47 +552,46 @@ class WantedShapesManager {
         }
     }
 
-// Add these two new helper methods
     createRandomShape() {
         return {
-            id: Math.random(),
-            type: this.availableShapes[Math.floor(Math.random() * this.availableShapes.length)],
-            color: this.availableColors[Math.floor(Math.random() * this.availableColors.length)],
-            x: Math.random() * (this.canvas.width - 100) + 50,
-            y: Math.random() * (this.canvas.height - 100) + 50,
-            vx: (Math.random() - 0.5) * 4 * this.speed,
-            vy: (Math.random() - 0.5) * 4 * this.speed,
-            angle: Math.random() * Math.PI * 2,
-            swirlRadius: Math.random() * 100 + 50,
-            bouncePhase: Math.random() * Math.PI * 2,
+            id: this.random.random(),
+            type: this.random.randomChoice(this.availableShapes),
+            color: this.random.randomChoice(this.availableColors),
+            x: this.random.random() * (this.canvas.width - 100) + 50,
+            y: this.random.random() * (this.canvas.height - 100) + 50,
+            vx: (this.random.random() - 0.5) * 4 * this.speed,
+            vy: (this.random.random() - 0.5) * 4 * this.speed,
+            angle: this.random.random() * Math.PI * 2,
+            swirlRadius: this.random.random() * 100 + 50,
+            bouncePhase: this.random.random() * Math.PI * 2,
             found: false
         };
     }
 
     createShapeWithTargetCriteria() {
         const shape = {
-            id: Math.random(),
+            id: this.random.random(),
             type: null,
             color: null,
-            x: Math.random() * (this.canvas.width - 100) + 50,
-            y: Math.random() * (this.canvas.height - 100) + 50,
-            vx: (Math.random() - 0.5) * 4 * this.speed,
-            vy: (Math.random() - 0.5) * 4 * this.speed,
-            angle: Math.random() * Math.PI * 2,
-            swirlRadius: Math.random() * 100 + 50,
-            bouncePhase: Math.random() * Math.PI * 2,
+            x: this.random.random() * (this.canvas.width - 100) + 50,
+            y: this.random.random() * (this.canvas.height - 100) + 50,
+            vx: (this.random.random() - 0.5) * 4 * this.speed,
+            vy: (this.random.random() - 0.5) * 4 * this.speed,
+            angle: this.random.random() * Math.PI * 2,
+            swirlRadius: this.random.random() * 100 + 50,
+            bouncePhase: this.random.random() * Math.PI * 2,
             found: false
         };
 
         // Set properties based on target type
         switch(this.targetType) {
             case 'color':
-                shape.type = this.availableShapes[Math.floor(Math.random() * this.availableShapes.length)];
+                shape.type = this.random.randomChoice(this.availableShapes);
                 shape.color = this.targetColor;
                 break;
             case 'shape':
                 shape.type = this.targetShape;
-                shape.color = this.availableColors[Math.floor(Math.random() * this.availableColors.length)];
+                shape.color = this.random.randomChoice(this.availableColors);
                 break;
             case 'combination':
                 shape.type = this.targetShape;
@@ -581,11 +606,7 @@ class WantedShapesManager {
     }
 
     shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
+        return this.random.shuffleArray([...array]);
     }
 
     isTarget(shape) {
@@ -638,8 +659,8 @@ class WantedShapesManager {
                     break;
 
                 case 'random':
-                    shape.vx += (Math.random() - 0.5) * 0.2;
-                    shape.vy += (Math.random() - 0.5) * 0.2;
+                    shape.vx += (this.random.random() - 0.5) * 0.2;
+                    shape.vy += (this.random.random() - 0.5) * 0.2;
                     const maxSpeed = 5;
                     shape.vx = Math.min(maxSpeed, Math.max(-maxSpeed, shape.vx));
                     shape.vy = Math.min(maxSpeed, Math.max(-maxSpeed, shape.vy));
@@ -963,6 +984,12 @@ class WantedShapesManager {
 
                     this.draw();
 
+                    this.pushLogEntry({
+                        state: "CORRECT",
+                        item: shape,
+                        positionInTime: this.popupTimer
+                    });
+
                     // Check if game is complete
                     if (this.targetFoundCount >= this.totalTargets) {
                         this.endGame();
@@ -970,6 +997,12 @@ class WantedShapesManager {
                 } else {
                     // Wrong click
                     this.wrongClicks++;
+
+                    this.pushLogEntry({
+                        state: "WRONG",
+                        item: shape,
+                        positionInTime: this.popupTimer
+                    });
 
                     // Flash red effect could be added here
                     const originalFill = this.ctx.fillStyle;
@@ -993,6 +1026,34 @@ class WantedShapesManager {
         this.stopTimer();
         this.draw();
         this.showPopup();
+        this.pushLogEntry({
+            state: "FINISHED",
+            item: "-",
+            positionInTime: this.popupTimer
+        });
+    }
+
+    pushLogEntry(logEntry) {
+        this.completeLog.push(logEntry);
+
+        if (window.vuplex) {
+            const sendData = {
+                type: "NeuroExercises",
+                activity: "FindShapes",
+                dataNE: {
+                    activity: "FindShapes",
+                    target: (this.targetType !== "shape" ? this.targetColor : "") + (this.targetType !== "color" ? " " : "") + (this.targetType !== "color" ? this.targetShape : ""),
+                    totalTargets: this.totalTargets,
+                    seed: this.seed,
+                    log: this.completeLog,
+                    errors: this.wrongClicks,
+                    time: parseFloat(this.popupTimer.toFixed(2)),
+                }
+            };
+            window.vuplex.postMessage(JSON.stringify(sendData));
+        } else {
+            console.log("VUPLEX bridge not available");
+        }
     }
 }
 

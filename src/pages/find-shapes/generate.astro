@@ -275,6 +275,41 @@ import { Square, RectangleHorizontal, Circle, Triangle, Cross, Heart, Star, Pent
                                 className="mb-4"
                         />
 
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-foreground mb-2">
+                                Random Seed (Optional)
+                            </label>
+                            <FormInput
+                                    id="seedInput"
+                                    label="Seed Value"
+                                    type="number"
+                                    value=""
+                                    min="0"
+                                    max="2147483647"
+                                    note="Leave empty for random generation. Use a specific seed to get reproducible shape layouts and movements."
+                                    className="mb-2"
+                            />
+                            <div class="flex gap-2 mt-2">
+                                <button
+                                        id="randomSeedBtn"
+                                        type="button"
+                                        class="px-3 py-1 text-sm bg-secondary text-secondary-foreground rounded-lg hover:bg-accent transition-colors"
+                                >
+                                    Generate Random Seed
+                                </button>
+                                <button
+                                        id="copySeedBtn"
+                                        type="button"
+                                        class="px-3 py-1 text-sm bg-secondary text-secondary-foreground rounded-lg hover:bg-accent transition-colors"
+                                >
+                                    Copy Current Seed
+                                </button>
+                            </div>
+                            <p class="text-sm text-muted-foreground mt-2">
+                                Seeds make the game reproducible - the same seed will produce identical shape positions, types, and movements every time.
+                            </p>
+                        </div>
+
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-foreground mb-2">
                                 Movement Type
@@ -467,6 +502,55 @@ import { Square, RectangleHorizontal, Circle, Triangle, Cross, Heart, Star, Pent
                 }
             });
         });
+    </script>
+    // Add this to the generation page (after the existing script tags)
+    <script>
+        // Seed handling functionality
+        const seedInput = document.getElementById('seedInput');
+        const randomSeedBtn = document.getElementById('randomSeedBtn');
+        const copySeedBtn = document.getElementById('copySeedBtn');
+
+        // Generate random seed (using 32-bit integer range)
+        if (randomSeedBtn) {
+            randomSeedBtn.addEventListener('click', () => {
+                const randomSeed = Math.floor(Math.random() * 0x7fffffff);
+                seedInput.value = randomSeed;
+                // IMPORTANT: Trigger the URL generation
+                if (typeof generateURL === 'function') {
+                    generateURL();
+                } else {
+                    // If generateURL is not in scope, trigger input/change events
+                    const event = new Event('input', { bubbles: true });
+                    seedInput.dispatchEvent(event);
+                }
+            });
+        }
+
+        // Copy current seed to clipboard
+        if (copySeedBtn) {
+            copySeedBtn.addEventListener('click', async () => {
+                const currentSeed = seedInput.value;
+                if (currentSeed && currentSeed !== '') {
+                    try {
+                        await navigator.clipboard.writeText(currentSeed);
+                        copySeedBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copySeedBtn.textContent = 'Copy Current Seed';
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy seed:', err);
+                    }
+                } else {
+                    alert('No seed value to copy');
+                }
+            });
+        }
+
+        // Auto-generate URL when seed changes
+        if (seedInput) {
+            seedInput.addEventListener('input', generateURL);
+            seedInput.addEventListener('change', generateURL);
+        }
     </script>
     <script src="../../scripts/WantedShapesGenerateScript.js"></script>
 </Layout>

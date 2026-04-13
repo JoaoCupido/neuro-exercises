@@ -101,6 +101,15 @@ import GridDocs from '../../components/GridDocs.astro';
                             />
 
                             <ParameterDoc
+                                    name="seed"
+                                    description="Seed value for deterministic randomization. Using the same seed will generate identical shape positions, movements, and targets across runs."
+                                    type="Number"
+                                    defaultValue="(random)"
+                                    examples={["/?seed=12345", "/?seed=1119806513", "/?seed=5789626"]}
+                                    codeExample="?seed=42"
+                            />
+
+                            <ParameterDoc
                                     name="showTimer"
                                     description="Shows or hides the timer display during the game."
                                     type="Boolean"
@@ -531,6 +540,14 @@ import GridDocs from '../../components/GridDocs.astro';
                                     <p class="text-sm text-muted-foreground">
                                         Use <code class="bg-secondary px-1 rounded">targetCount</code> when you want consistent game length. Without it, the game generates
                                         1-3 target shapes for smaller games (less than 20 shapes) or 10-20% of total shapes for larger games.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <h3 class="font-semibold text-foreground">Reproducibility</h3>
+                                    <p class="text-sm text-muted-foreground">
+                                        Use the <code class="bg-secondary px-1 rounded">seed</code> parameter to reproduce identical games.
+                                        This is useful for testing, benchmarking, or creating consistent difficulty across users.
                                     </p>
                                 </div>
                             </div>

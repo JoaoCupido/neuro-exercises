@@ -6,6 +6,7 @@ A collection of cognitive tools built with **Astro**, **Tailwind CSS**, and opti
 * **🔗 Trail Making Test (TMT)** – A neuropsychological sequencing exercise
 * **📷 Camera** – Camera-based activities including object detection and facial emotion recognition using webcam
 * **🔣 Text Recognition** – Convert handwritten/drawn content to text with OCR capabilities
+* **🔍 Find Shapes** – A dynamic visual search game with customizable targets, movement, and difficulty
 
 The app can be used:
 
@@ -55,6 +56,16 @@ The app can be used:
 * 🧹 **Canvas Management** – Clear, undo/redo functionality with customizable button positions
 * 🎯 **Multiple OCR Engines** – Support for Tesseract, Guten, and PaddleOCR engines
 
+### Find Shapes Exercise
+* 🎯 **Target-Based Gameplay** – Find shapes based on color, shape, or specific combinations
+* 🔢 **Configurable Target Count** – Guarantee an exact number of targets using targetCount
+* 🎲 **Deterministic Mode** – Use seed for reproducible shape layouts and movement
+* 🎨 **Custom Shape & Color Pools** – Fully control which shapes and colors appear
+* 🌀 **Multiple Movement Types** – Linear, swirly, bouncy, wavy, spiral, and random motion
+* 🧱 **Border Behaviors** – Collision (bounce) or wrap-around screen edges
+* ⏱️ **Built-in Timer & Performance Tracking** – Tracks time, correct selections, and errors
+* 🧾 **Detailed Logging** – Captures user interactions for analysis or external integrations
+
 ---
 
 ## Getting Started
@@ -99,7 +110,7 @@ This allows you to open the app in a browser even when running the desktop execu
 ## Pages
 
 * `/` – Home menu
-* `/:exercise` – Individual exercise page (available exercises: drawing, tmt, camera, text-recognition)
+* `/:exercise` – Individual exercise page (available exercises: drawing, tmt, camera, text-recognition, find-shapes)
 * `/:exercise/docs` – API documentation for any exercise
 * `/:exercise/generate` – URL generator for any exercise
 
