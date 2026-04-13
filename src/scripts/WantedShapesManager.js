@@ -233,14 +233,28 @@ class WantedShapesManager {
 
         const icon = iconMap[shape] || shape;
 
+        if (mode === 'mono') {
+            return `
+                <span style="color: #000000;">
+                    <i data-lucide="${icon}" style="
+                        width: 32px;
+                        height: 32px;
+                        fill: none;
+                        stroke: currentColor;
+                        stroke-width: 2;
+                    "></i>
+                </span>
+            `;
+        }
+
         // 🎯 single color mode (combination case)
         const color = this.getColorValue(mode);
 
         return `
         <span style="color: ${color};">
             <i data-lucide="${icon}" style="
-                width: 28px;
-                height: 28px;
+                width: 32px;
+                height: 32px;
                 fill: currentColor;
                 stroke: currentColor;
             "></i>
@@ -710,16 +724,17 @@ class WantedShapesManager {
     // Add this color mapping function to the WantedShapesManager class
     getColorValue(colorName) {
         const colorMap = {
-            'red': '#ff0000',
-            'yellow': '#ffff00',
-            'blue': '#0000ff',
-            'green': '#00ff00',
-            'white': '#ffffff',
-            'black': '#000000',
-            'purple': '#800080',
-            'pink': '#ffc0cb',
-            'orange': '#ffa500',
-            'brown': '#8b4513',      // Saddle brown - warm, recognizable brown
+            'red': 'oklch(63.7% 0.237 25.331)',      // Tailwind red-500
+            'yellow': 'oklch(79.5% 0.184 86.047)',   // Tailwind yellow-500
+            'blue': 'oklch(62.3% 0.214 259.815)',     // Tailwind blue-500
+            'green': 'oklch(72.3% 0.219 149.579)',    // Tailwind green-500
+            'white': 'oklch(98.5% 0.002 247.839)', // Tailwind gray-50
+            'black': 'oklch(13% 0.028 261.692)', // Tailwind gray-950
+            'purple': 'oklch(62.7% 0.265 303.9)',   // Tailwind purple-500
+            'pink': 'oklch(65.6% 0.241 354.308)',     // Tailwind pink-500
+            'orange': 'oklch(70.5% 0.213 47.604)',   // Tailwind orange-500
+            'brown': 'oklch(41.4% 0.112 45.904)',    // Tailwind amber-900
+            'gray': 'oklch(55.1% 0.027 264.364)', // Tailwind gray-500
             'transparent': 'transparent',
         };
 

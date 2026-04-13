@@ -41,7 +41,7 @@ import { Square, RectangleHorizontal, Circle, Triangle, Cross, Heart, Star, Pent
         <!-- Invalid Target Error Popup -->
         <div id="errorPopup" class="fixed inset-0 flex items-center justify-center bg-black/70 z-50 hidden">
             <div class="bg-card border border-border rounded-lg p-8 max-w-md mx-4 text-center">
-                <h3 class="text-2xl font-bold text-red-500 mb-4">Invalid Target!</h3>
+                <h3 class="text-2xl font-bold text-destructive mb-4">Invalid Target!</h3>
                 <p id="errorMessage" class="text-foreground mb-6"></p>
                 <a href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "/")} class="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors inline-block">
                     Back to Menu
