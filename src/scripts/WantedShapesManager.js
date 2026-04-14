@@ -53,10 +53,10 @@ class WantedShapesManager {
         this.seed = this.urlParams.get('seed') ? parseInt(this.urlParams.get('seed')) : null;
 
         // Animation settings
-        this.speed = parseFloat(this.urlParams.get('speed')) || 1.00;
-        this.swirlSpeed = parseFloat(this.urlParams.get('swirlSpeed')) || 0.02;
-        this.bounceAmplitude = parseFloat(this.urlParams.get('bounceAmplitude')) || 50;
-        this.bounceFrequency = parseFloat(this.urlParams.get('bounceFrequency')) || 0.005;
+        this.speed = parseFloat(this.urlParams.get('speed')) ?? 1.00;
+        this.swirlSpeed = parseFloat(this.urlParams.get('swirlSpeed')) ?? 0.02;
+        this.bounceAmplitude = parseFloat(this.urlParams.get('bounceAmplitude')) ?? 50;
+        this.bounceFrequency = parseFloat(this.urlParams.get('bounceFrequency')) ?? 0.005;
 
         // Display settings
         this.showTimer = this.urlParams.get('showTimer') !== 'false';
@@ -71,7 +71,7 @@ class WantedShapesManager {
     initRandomGenerator() {
         if (this.seed !== null) {
             this.random = new SeededRandom(this.seed);
-            console.log(`Using seeded random generator with seed: ${this.seed}`);
+            //console.log(`Using seeded random generator with seed: ${this.seed}`);
         } else {
             // Use regular Math.random if no seed provided
             this.random = {
@@ -514,9 +514,56 @@ class WantedShapesManager {
             const remainingShapes = Math.max(0, this.numShapes - this.targetCount);
             for (let i = 0; i < remainingShapes; i++) {
                 let shape;
+                let attempts = 0;
+                const maxAttempts = 50;
+
                 do {
                     shape = this.createRandomShape();
-                } while (this.isTarget(shape)); // Ensure it's NOT a target
+                    attempts++;
+
+                    // If we've tried too many times and still can't find a non-target shape,
+                    // force a non-target by modifying the shape
+                    if (attempts >= maxAttempts && this.isTarget(shape)) {
+                        // Force the shape to be non-target by changing attributes
+                        if (this.targetType === 'color') {
+                            // Change to a different color (if available)
+                            const nonTargetColors = this.availableColors.filter(c => c !== this.targetColor);
+                            if (nonTargetColors.length > 0) {
+                                shape.color = this.random.randomChoice(nonTargetColors);
+                            } else {
+                                // No alternative colors available, change shape instead
+                                const nonTargetShapes = this.availableShapes.filter(s => s !== this.targetShape);
+                                if (nonTargetShapes.length > 0) {
+                                    shape.type = this.random.randomChoice(nonTargetShapes);
+                                }
+                            }
+                        } else if (this.targetType === 'shape') {
+                            // Change to a different shape (if available)
+                            const nonTargetShapes = this.availableShapes.filter(s => s !== this.targetShape);
+                            if (nonTargetShapes.length > 0) {
+                                shape.type = this.random.randomChoice(nonTargetShapes);
+                            } else {
+                                // No alternative shapes available, change color instead
+                                const nonTargetColors = this.availableColors.filter(c => c !== this.targetColor);
+                                if (nonTargetColors.length > 0) {
+                                    shape.color = this.random.randomChoice(nonTargetColors);
+                                }
+                            }
+                        } else if (this.targetType === 'combination') {
+                            // Change either color or shape to break the combination
+                            const nonTargetColors = this.availableColors.filter(c => c !== this.targetColor);
+                            const nonTargetShapes = this.availableShapes.filter(s => s !== this.targetShape);
+
+                            if (nonTargetColors.length > 0) {
+                                shape.color = this.random.randomChoice(nonTargetColors);
+                            } else if (nonTargetShapes.length > 0) {
+                                shape.type = this.random.randomChoice(nonTargetShapes);
+                            }
+                        }
+                        break;
+                    }
+                } while (this.isTarget(shape));
+
                 this.shapes.push(shape);
             }
 
