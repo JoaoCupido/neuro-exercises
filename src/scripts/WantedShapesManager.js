@@ -53,10 +53,10 @@ class WantedShapesManager {
         this.seed = this.urlParams.get('seed') ? parseInt(this.urlParams.get('seed')) : null;
 
         // Animation settings
-        this.speed = parseFloat(this.urlParams.get('speed')) ?? 1.00;
-        this.swirlSpeed = parseFloat(this.urlParams.get('swirlSpeed')) ?? 0.02;
-        this.bounceAmplitude = parseFloat(this.urlParams.get('bounceAmplitude')) ?? 50;
-        this.bounceFrequency = parseFloat(this.urlParams.get('bounceFrequency')) ?? 0.005;
+        this.speed = parseFloat(this.urlParams.get('speed') ?? 1.00);
+        this.swirlSpeed = parseFloat(this.urlParams.get('swirlSpeed') ?? 0.02);
+        this.bounceAmplitude = parseFloat(this.urlParams.get('bounceAmplitude') ?? 50);
+        this.bounceFrequency = parseFloat(this.urlParams.get('bounceFrequency') ?? 0.005);
 
         // Display settings
         this.showTimer = this.urlParams.get('showTimer') !== 'false';
