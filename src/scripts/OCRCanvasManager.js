@@ -1,9 +1,7 @@
 import { BackgroundSettings } from "./BackgroundSettings.js";
 import { GridSettings } from "./GridSettings.js";
 import OcrBrowser from "@gutenye/ocr-browser";
-//import { PaddleOcrService } from "ppu-paddle-ocr/web";
-import * as ortWeb from "onnxruntime-web";
-import { createDefaultPPOcrV5, supportsWebGl, supportsWasm, supportsWebGpu, supportsWebNN } from "ffocr";
+import { createDefaultPPOcrV5 } from "ffocr";
 
 // OCR Canvas Manager
 class OCRCanvasManager {
@@ -949,6 +947,10 @@ class OCRCanvasManager {
                 //return await this.recognizeWithRapidOcr(canvas);
             case 'guten':
                 return await this.recognizeWithGutenOCR(canvas);
+            case 'ocrad':
+                return await this.recognizeWithOcradEngine(canvas);
+            case 'gocr':
+                return await this.recognizeWithGocrEngine(canvas);
             default:
                 return await this.recognizeWithTesseractEngine(canvas);
         }
@@ -991,6 +993,27 @@ class OCRCanvasManager {
     }
 
      */
+
+    async recognizeWithOcradEngine(canvas) {
+        if (typeof OCRAD === 'undefined') {
+            await this.loadOCRAD();
+        }
+
+        const string = OCRAD(canvas);
+        //console.log(string);
+        return string.trim();
+    }
+
+    async recognizeWithGocrEngine(canvas) {
+        if (typeof GOCR === 'undefined') {
+            await this.loadGOCR();
+        }
+
+        const string = GOCR(canvas);
+        //console.log(string);
+        return string.trim();
+    }
+
     async recognizeWithPaddleEngine(canvas) {
         if(!this.paddleOcrModel) {
             this.paddleOcrModel = createDefaultPPOcrV5();
@@ -1073,6 +1096,40 @@ class OCRCanvasManager {
                 script.src = import.meta.env.BASE_URL + '/scripts/ocrModels/tesseract.min.js';
             } else {
                 script.src = '/scripts/ocrModels/tesseract.min.js';
+            }
+
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+
+    async loadOCRAD() {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            const isGitHubPages = window.location.hostname.includes('github.io');
+
+            if (isGitHubPages) {
+                script.src = import.meta.env.BASE_URL + '/scripts/ocrModels/ocrad.js';
+            } else {
+                script.src = '/scripts/ocrModels/ocrad.js';
+            }
+
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+
+    async loadGOCR() {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            const isGitHubPages = window.location.hostname.includes('github.io');
+
+            if (isGitHubPages) {
+                script.src = import.meta.env.BASE_URL + '/scripts/ocrModels/gocr.js';
+            } else {
+                script.src = '/scripts/ocrModels/gocr.js';
             }
 
             script.onload = resolve;
