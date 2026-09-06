@@ -1,7 +1,7 @@
 {
   "name": "astro-drawing-canvas",
   "type": "module",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "scripts": {
     "dev": "astro dev --host",
     "start": "astro dev",
@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@gutenye/ocr-browser": "^1.4.8",
+    "@huggingface/transformers": "^4.2.0",
     "@lucide/astro": "^0.552.0",
     "@napi-rs/system-ocr": "^1.0.2",
     "@paddlejs-models/ocr": "^1.2.4",

@@ -1,0 +1,106 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ParameterDoc from '../../components/ParameterDoc.astro';
+import BackgroundDocs from '../../components/BackgroundDocs.astro';
+import GridDocs from '../../components/GridDocs.astro';
+---
+
+<Layout title="Speech to Text Documentation - Neuro Exercises">
+    <main class="min-h-screen bg-background">
+        <header class="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border py-12 px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-4xl">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-3 h-3 rounded-full bg-primary"></div>
+                    <span class="text-sm font-medium text-primary">API Documentation</span>
+                </div>
+                <h1 class="text-4xl font-bold text-foreground mb-3">Speech-to-Text Configuration</h1>
+                <p class="text-muted-foreground text-lg max-w-2xl">
+                    Transcribe spoken voice from the microphone directly to screen text labels with answer verification.
+                </p>
+            </div>
+        </header>
+
+        <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-10">
+            <section id="speech-parameters">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-2 h-8 bg-primary rounded-full"></div>
+                    <h2 class="text-2xl font-bold text-foreground">Speech Recognition Parameters</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <ParameterDoc
+                            name="speechLanguage"
+                            description="BCP-47 language tag for microphone recognition."
+                            type="String"
+                            defaultValue="en-US"
+                            examples={["/?speechLanguage=en-US", "/?speechLanguage=pt-BR", "/?speechLanguage=es-ES"]}
+                            codeExample="?speechLanguage=en-US"
+                    />
+
+                    <ParameterDoc
+                            name="correctAnswers"
+                            description="List of target words/phrases to validate against (comma-separated or JSON string)."
+                            type="String or JSON array"
+                            defaultValue=""
+                            examples={['/?correctAnswers=["apple","banana"]', '/?correctAnswers=yes,no,stop']}
+                            codeExample='?correctAnswers=["hello","world"]'
+                    />
+
+                    <ParameterDoc
+                            name="continuous"
+                            description="Whether voice recognition keeps listening continuously after pauses."
+                            type="Boolean"
+                            defaultValue="true"
+                            examples={["/?continuous=false"]}
+                            codeExample="?continuous=true"
+                    />
+
+                    <ParameterDoc
+                            name="autoStart"
+                            description="Automatically prompts microphone and starts listening immediately."
+                            type="Boolean"
+                            defaultValue="false"
+                            examples={["/?autoStart=true"]}
+                            codeExample="?autoStart=true"
+                    />
+
+                    <ParameterDoc
+                            name="micButtonPosition"
+                            description="Position of the mic toggle button. Format: [top|middle|bottom]-[left|center|right]"
+                            type="String"
+                            defaultValue="bottom-center"
+                            examples={["/?micButtonPosition=bottom-center", "/?micButtonPosition=top-right"]}
+                            codeExample="?micButtonPosition=bottom-center"
+                    />
+
+                    <ParameterDoc
+                            name="clearButtonPosition"
+                            description="Position of the clear text button."
+                            type="String"
+                            defaultValue="bottom-right"
+                            examples={["/?clearButtonPosition=bottom-right"]}
+                            codeExample="?clearButtonPosition=bottom-right"
+                    />
+
+                    <ParameterDoc
+                            name="hideLiveTranscript"
+                            description="Hides the real-time transcript floating label."
+                            type="Boolean"
+                            defaultValue="false"
+                            examples={["/?hideLiveTranscript=true"]}
+                            codeExample="?hideLiveTranscript=true"
+                    />
+                </div>
+            </section>
+
+            <section id="appearance">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-2 h-8 bg-primary rounded-full"></div>
+                    <h2 class="text-2xl font-bold text-foreground">Background & Grid</h2>
+                </div>
+                <BackgroundDocs />
+                <GridDocs />
+            </section>
+        </div>
+    </main>
+</Layout>

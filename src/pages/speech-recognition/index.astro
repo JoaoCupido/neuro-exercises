@@ -1,0 +1,89 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Mic, MicOff, Trash2, RotateCcw } from '@lucide/astro';
+---
+
+<Layout title="Speech to Text - Neuro Exercises" hideNavbar={true}>
+    <main class="min-h-screen relative overflow-hidden select-none">
+        <!-- Canvas Background Container -->
+        <div class="absolute inset-0">
+            <canvas id="bgColorCanvas" class="absolute inset-0"></canvas>
+            <canvas id="bgImageCanvas" class="absolute inset-0"></canvas>
+            <canvas id="gridCanvas" class="absolute inset-0 pointer-events-none"></canvas>
+        </div>
+
+        <!-- Microphone Control Button -->
+        <div
+                id="micBtnContainer"
+                class="absolute bottom-6 left-1/2 -translate-x-1/2 z-50"
+        >
+            <button
+                    id="micBtn"
+                    class="relative group flex items-center justify-center p-5 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-105 active:scale-95 transition-all duration-200"
+                    aria-label="Toggle Microphone"
+            >
+                <span id="micPulse" class="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-75 hidden"></span>
+                <Mic id="micIcon" class="w-7 h-7 hidden" />
+                <MicOff id="micMutedIcon" class="w-7 h-7" />
+            </button>
+        </div>
+
+        <!-- Clear Button -->
+        <button
+                id="clearBtn"
+                class="absolute bottom-6 right-6 bg-destructive/10 text-destructive-foreground px-5 py-3.5 rounded-xl font-medium hover:bg-destructive/20 transition-all flex items-center gap-2 z-50 shadow-sm"
+        >
+            <Trash2 class="w-5 h-5" />
+            Clear
+        </button>
+
+        <!-- Live Spoken Label Text Display (Centered) -->
+        <div id="speechLiveResult" class="absolute bottom-32 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-8 py-4 rounded-xl text-2xl font-semibold opacity-0 transition-opacity duration-300 pointer-events-none z-50 max-w-[95%] text-center hidden">
+            <span id="speechLiveText"></span>
+        </div>
+
+        <!-- Results Popup Modal -->
+        <div id="popup" class="fixed inset-0 flex items-center justify-center bg-black/70 z-50 hidden">
+            <div class="bg-card border border-border rounded-xl p-8 max-w-md mx-4 text-center shadow-xl">
+                <h3 class="text-3xl font-bold text-foreground mb-4">✓ Correct!</h3>
+
+                <div class="bg-secondary rounded-xl p-4 mb-6 text-left">
+                    <h4 class="text-sm font-medium text-muted-foreground mb-1">Recognized Speech:</h4>
+                    <p id="recognizedText" class="text-foreground text-xl font-semibold break-words"></p>
+                </div>
+
+                <div class="mb-6">
+                    <p id="popupTimer" class="text-foreground font-medium">Time: 0 seconds</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3" id="buttonContainer">
+                    <button
+                            id="tryAgainBtn"
+                            class="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+                    >
+                        <RotateCcw class="w-4 h-4" />
+                        Try Again
+                    </button>
+                    <a
+                            href={(process.env.GITHUB_PAGES ? import.meta.env.BASE_URL : "/")}
+                            class="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-medium hover:bg-accent transition-colors text-center"
+                    >
+                        Back to Menu
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        console.log('🔥 SPEECH SCRIPT EXECUTING');
+
+        import { SpeechToTextManager } from '../../scripts/SpeechToTextManager.js';
+
+        console.log('🔥 MANAGER IMPORTED');
+
+        const manager = new SpeechToTextManager();
+
+        console.log('🔥 MANAGER CREATED', manager);
+    </script>
+</Layout>

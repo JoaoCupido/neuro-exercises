@@ -1,4 +1,4 @@
-import { Pencil, Waypoints, Zap, FileText, Camera, Text, WholeWord, Shapes } from "@lucide/astro";
+import { Pencil, Waypoints, Zap, FileText, Camera, Text, WholeWord, Shapes, Speech } from "@lucide/astro";
 
 /*
 export interface Exercise {
@@ -57,6 +57,16 @@ export const exercisesList = [
         icon: Shapes,
         path: "./find-shapes",
         pathWithoutDot: "/find-shapes"
+    },
+
+    {
+        id: "speech-to-text",
+        title: "Audio Recognition",
+        //description: "DEBUG",
+        description: "Speech recognition at any language",
+        icon: Speech,
+        path: "./speech-recognition",
+        pathWithoutDot: "/speech-recognition"
     },
 
     // Add more exercises later:
