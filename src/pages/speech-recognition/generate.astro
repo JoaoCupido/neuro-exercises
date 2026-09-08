@@ -16,20 +16,29 @@ import ImportUrl from '../../components/ImportUrl.astro';
                     <div>
                         <h3 class="text-lg font-semibold text-foreground mb-4">Speech Settings</h3>
 
+                        <!-- Model & Language Combined Select -->
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-foreground mb-2" for="speechLanguageSelect">
-                                Recognition Language
+                            <label class="block text-sm font-medium text-foreground mb-2" for="modelLanguageSelect">
+                                Recognition Engine & Language
                             </label>
-                            <select id="speechLanguageSelect" class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground">
-                                <option value="en-US">English (US)</option>
-                                <option value="en-GB">English (UK)</option>
-                                <option value="pt-BR">Portuguese (Brazil)</option>
-                                <option value="pt-PT">Portuguese (Portugal)</option>
-                                <option value="es-ES">Spanish (Spain)</option>
-                                <option value="fr-FR">French</option>
-                                <option value="de-DE">German</option>
-                                <option value="it-IT">Italian</option>
+                            <select id="modelLanguageSelect" class="w-full px-4 py-2 bg-secondary border border-border rounded-lg text-foreground">
+                                <optgroup label="Web Speech API (Browser Built-in, Fast)">
+                                    <option value="web-speech|en-US" selected>Web Speech API - English (US)</option>
+                                    <option value="web-speech|en-GB">Web Speech API - English (UK)</option>
+                                    <option value="web-speech|pt-BR">Web Speech API - Portuguese (Brazil)</option>
+                                    <option value="web-speech|pt-PT">Web Speech API - Portuguese (Portugal)</option>
+                                    <option value="web-speech|es-ES">Web Speech API - Spanish (Spain)</option>
+                                    <option value="web-speech|fr-FR">Web Speech API - French</option>
+                                    <option value="web-speech|de-DE">Web Speech API - German</option>
+                                    <option value="web-speech|it-IT">Web Speech API - Italian</option>
+                                </optgroup>
+                                <optgroup label="Whisper Local (Transformers.js ONNX)">
+                                    <option value="whisper-tiny-en|en-US">Whisper Tiny - English</option>
+                                </optgroup>
                             </select>
+                            <p class="text-xs text-muted-foreground mt-2">
+                                Note: The SpeechRecognition Web API is supported in some of the most widely-used browsers (tested on Google Chrome and Microsoft Edge).
+                            </p>
                         </div>
 
                         <div class="mb-4">

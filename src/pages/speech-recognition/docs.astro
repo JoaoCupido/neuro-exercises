@@ -29,6 +29,15 @@ import GridDocs from '../../components/GridDocs.astro';
 
                 <div class="space-y-6">
                     <ParameterDoc
+                            name="speechModel"
+                            description="Speech recognition engine: 'web-speech' for instant browser API or 'whisper-tiny-en' for local Transformers.js ONNX."
+                            type="String"
+                            defaultValue="web-speech"
+                            examples={["/?speechModel=web-speech", "/?speechModel=whisper-tiny-en"]}
+                            codeExample="?speechModel=web-speech"
+                    />
+
+                    <ParameterDoc
                             name="speechLanguage"
                             description="BCP-47 language tag for microphone recognition."
                             type="String"

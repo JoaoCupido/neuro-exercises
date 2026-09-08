@@ -12,6 +12,15 @@ import { Mic, MicOff, Trash2, RotateCcw } from '@lucide/astro';
             <canvas id="gridCanvas" class="absolute inset-0 pointer-events-none"></canvas>
         </div>
 
+        <!-- Distinct Model Loading Indicator (Separate from transcript bubble) -->
+        <div
+                id="modelLoadingIndicator"
+                class="absolute top-6 left-1/2 -translate-x-1/2 bg-black/80 text-white px-5 py-2.5 rounded-full text-sm font-medium shadow-lg transition-opacity duration-300 pointer-events-none z-50 flex items-center gap-2.5 hidden opacity-0"
+        >
+            <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+            <span id="modelLoadingText">Loading speech model...</span>
+        </div>
+
         <!-- Microphone Control Button -->
         <div
                 id="micBtnContainer"
@@ -76,14 +85,7 @@ import { Mic, MicOff, Trash2, RotateCcw } from '@lucide/astro';
     </main>
 
     <script>
-        console.log('🔥 SPEECH SCRIPT EXECUTING');
-
         import { SpeechToTextManager } from '../../scripts/SpeechToTextManager.js';
-
-        console.log('🔥 MANAGER IMPORTED');
-
-        const manager = new SpeechToTextManager();
-
-        console.log('🔥 MANAGER CREATED', manager);
+        new SpeechToTextManager();
     </script>
 </Layout>
